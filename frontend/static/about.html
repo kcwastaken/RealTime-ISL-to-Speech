@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About - SignSpeak AI</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>tailwind.config = { darkMode: 'class' }</script>
+</head>
+<body class="bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 min-h-screen font-sans transition-colors duration-300">
+  
+  <nav class="p-6 flex justify-between items-center max-w-5xl mx-auto">
+    <a href="index.html" class="text-xl font-bold bg-gradient-to-r from-blue-600 to-violet-600 dark:from-blue-400 dark:to-violet-400 bg-clip-text text-transparent">SignSpeak AI</a>
+    <div class="flex gap-6 items-center">
+      <a href="index.html" class="text-sm font-bold text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400">Home</a>
+      <a href="contact.html" class="text-sm font-bold text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400">Contact</a>
+    </div>
+  </nav>
+
+  <main class="max-w-4xl mx-auto px-6 py-12">
+    <h1 class="text-5xl font-extrabold mb-8 text-slate-900 dark:text-white">Empowering <span class="text-blue-600 dark:text-blue-400">Accessibility</span> Through AI</h1>
+    
+    <div class="bg-white dark:bg-slate-900 p-8 rounded-3xl border border-slate-100 dark:border-slate-800 shadow-xl shadow-slate-200/50 dark:shadow-none mb-12">
+      <h2 class="text-2xl font-bold mb-4 text-slate-900 dark:text-white">Why We Built This</h2>
+      <p class="text-slate-600 dark:text-slate-400 leading-relaxed mb-4">
+        SignSpeak AI was created to bridge the communication gap between the Deaf and hard-of-hearing community and the rest of the world. Millions of people rely on sign language as their primary mode of communication, yet everyday interactions—from ordering food to attending hackathons—often present significant friction.
+      </p>
+      <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+        By leveraging cutting-edge web technologies like MediaPipe, LSTM neural networks, and Google Gemini, our goal is to democratize accessibility directly in the browser. No expensive hardware, no heavy installations—just real-time, bidirectional translation that empowers seamless human connection.
+      </p>
+    </div>
+
+    <h2 class="text-3xl font-extrabold mb-6 text-slate-900 dark:text-white">Meet the Team</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+      
+      <div class="bg-white dark:bg-slate-900 p-8 rounded-3xl border border-slate-100 dark:border-slate-800 shadow-xl shadow-slate-200/50 dark:shadow-none text-center group">
+        <div class="w-24 h-24 bg-blue-100 dark:bg-blue-900/30 rounded-full mx-auto flex items-center justify-center text-4xl mb-4 group-hover:scale-105 transition-transform">👨‍💻</div>
+        <h3 class="text-xl font-bold text-slate-900 dark:text-white">Krishna Chaudhary</h3>
+        <p class="text-blue-600 dark:text-blue-400 text-sm font-bold mb-3">Backend & ML Engineering</p>
+        <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
+          Information Technology student specializing in Artificial Intelligence and Machine Learning (AIML). Passionate about applying deep learning architectures like LSTMs to solve real-world accessibility challenges.
+        </p>
+      </div>
+
+      <div class="bg-white dark:bg-slate-900 p-8 rounded-3xl border border-slate-100 dark:border-slate-800 shadow-xl shadow-slate-200/50 dark:shadow-none text-center group">
+        <div class="w-24 h-24 bg-violet-100 dark:bg-violet-900/30 rounded-full mx-auto flex items-center justify-center text-4xl mb-4 group-hover:scale-105 transition-transform">👩‍🎨</div>
+        <h3 class="text-xl font-bold text-slate-900 dark:text-white">Shivangi Bansal</h3>
+        <p class="text-violet-600 dark:text-violet-400 text-sm font-bold mb-3">Frontend & 3D Interaction</p>
+        <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
+          Information Technology student focusing on interactive digital experiences. Currently pioneering the integration of WebGL and rigged 3D avatars to bring natural, visual sign language responses to the browser.
+        </p>
+      </div>
+
+    </div>
+  </main>
+
+  <script>
+    if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      document.documentElement.classList.add('dark');
+    }
+  </script>
+</body>
+</html>

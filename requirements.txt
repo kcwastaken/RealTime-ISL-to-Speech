@@ -1,7 +1,10 @@
 fastapi
 uvicorn
 websockets
-tensorflow
-mediapipe
+google-genai
+# TensorFlow 2.16 is compatible with MediaPipe's protobuf < 5 requirement.
+tensorflow==2.16.1
+# The application uses the legacy mp.solutions.holistic landmark API.
+mediapipe==0.10.21
 opencv-python-headless
 numpy

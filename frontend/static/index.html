@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SignSpeak AI - ISL Translator & Practice</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = { darkMode: 'class' }
+  </script>
+  <style>
+    .custom-scrollbar::-webkit-scrollbar { width: 8px; }
+    .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+    .dark .custom-scrollbar::-webkit-scrollbar-thumb { background: #475569; }
+    
+    .bg-pattern {
+      background-image: radial-gradient(#cbd5e1 1px, transparent 1px);
+      background-size: 32px 32px;
+    }
+    .dark .bg-pattern {
+      background-image: radial-gradient(#334155 1px, transparent 1px);
+    }
+  </style>
+</head>
+<body class="bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 min-h-screen font-sans selection:bg-blue-500 selection:text-white relative bg-pattern transition-colors duration-300">
+
+  <!-- TOP NAVIGATION -->
+  <nav id="topNav" class="absolute top-0 left-0 right-0 p-6 flex justify-end items-center gap-6 z-50 transition-opacity duration-300">
+    <a href="about.html" class="text-sm font-bold text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">About</a>
+    <a href="contact.html" class="text-sm font-bold text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Contact</a>
+    <button id="themeToggle" class="p-2 bg-white dark:bg-slate-800 rounded-full shadow-sm border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:scale-110 transition-all">
+      <svg class="sunIcon w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+      <svg class="moonIcon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
+    </button>
+  </nav>
+
+  <!-- ================= LANDING PAGE ================= -->
+  <div id="landingPage" class="min-h-screen flex flex-col items-center justify-center p-6 relative overflow-hidden transition-opacity duration-500">
+    <div class="absolute top-0 left-0 w-[600px] h-[600px] bg-blue-400/20 rounded-full blur-[100px] pointer-events-none"></div>
+    <div class="absolute bottom-0 right-0 w-[600px] h-[600px] bg-violet-400/20 rounded-full blur-[100px] pointer-events-none"></div>
+
+    <div class="z-10 text-center max-w-6xl mx-auto mt-12">
+      <h1 class="text-6xl md:text-7xl font-extrabold tracking-tight mb-6 text-slate-900 dark:text-white">
+        Bridging the gap with <br/>
+        <span class="bg-gradient-to-r from-blue-600 to-violet-600 dark:from-blue-400 dark:to-violet-400 bg-clip-text text-transparent drop-shadow-sm">SignSpeak AI</span>
+      </h1>
+
+      <p class="text-lg md:text-xl text-slate-600 dark:text-slate-400 mb-16 max-w-2xl mx-auto leading-relaxed font-medium">
+        A real-time, bidirectional Indian Sign Language (ISL) translator and interactive learning trainer. Convert signs into fluent English sentences, and practice gestures with live neural feedback.
+      </p>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16 text-left">
+        <div class="group bg-white dark:bg-slate-900 p-8 rounded-[2rem] border border-slate-100 dark:border-slate-800 shadow-xl shadow-slate-200/50 dark:shadow-none transition-all duration-300 hover:-translate-y-4 hover:shadow-2xl hover:shadow-blue-500/10 cursor-default">
+          <div class="w-16 h-16 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-2xl flex items-center justify-center text-3xl mb-6 shadow-sm transition-transform duration-300 group-hover:scale-110 group-hover:rotate-6">🖐️</div>
+          <h3 class="text-2xl font-bold text-slate-900 dark:text-white mb-3">Sign to Speech</h3>
+          <p class="text-slate-500 dark:text-slate-400 leading-relaxed font-medium">Detects ISL keypoints in real-time using MediaPipe & an LSTM neural network directly in your browser.</p>
+        </div>
+
+        <div class="group bg-white dark:bg-slate-900 p-8 rounded-[2rem] border border-slate-100 dark:border-slate-800 shadow-xl shadow-slate-200/50 dark:shadow-none transition-all duration-300 hover:-translate-y-4 hover:shadow-2xl hover:shadow-violet-500/10 cursor-default">
+          <div class="w-16 h-16 bg-violet-50 dark:bg-violet-900/30 text-violet-600 dark:text-violet-400 rounded-2xl flex items-center justify-center text-3xl mb-6 shadow-sm transition-transform duration-300 group-hover:scale-110 group-hover:-rotate-6">🎯</div>
+          <h3 class="text-2xl font-bold text-slate-900 dark:text-white mb-3">Practice Mode</h3>
+          <p class="text-slate-500 dark:text-slate-400 leading-relaxed font-medium">Gamified learning trainer giving instant feedback and accuracy scoring on your hand postures.</p>
+        </div>
+
+        <div class="group bg-white dark:bg-slate-900 p-8 rounded-[2rem] border border-slate-100 dark:border-slate-800 shadow-xl shadow-slate-200/50 dark:shadow-none transition-all duration-300 hover:-translate-y-4 hover:shadow-2xl hover:shadow-emerald-500/10 cursor-default">
+          <div class="w-16 h-16 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 rounded-2xl flex items-center justify-center text-3xl mb-6 shadow-sm transition-transform duration-300 group-hover:scale-110 group-hover:rotate-6">🎙️</div>
+          <h3 class="text-2xl font-bold text-slate-900 dark:text-white mb-3">Speech to Sign</h3>
+          <p class="text-slate-500 dark:text-slate-400 leading-relaxed font-medium">Speak into your mic to instantly pull and display matching visual ISL demonstrations.</p>
+        </div>
+      </div>
+
+      <button id="enterAppBtn" class="group relative px-10 py-5 bg-gradient-to-r from-blue-600 to-violet-600 hover:from-blue-700 hover:to-violet-700 text-white text-xl font-bold rounded-full transition-all duration-300 hover:scale-105 shadow-xl shadow-blue-500/30">
+        Launch Workspace
+        <span class="inline-block ml-2 transition-transform duration-300 group-hover:translate-x-2">→</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ================= WORKSPACE INTERFACE ================= -->
+  <div id="appInterface" class="hidden h-screen p-4 flex flex-col transition-opacity duration-500 opacity-0 relative z-10">
+    
+    <div class="flex justify-between items-center mb-4 px-4 py-3 bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800">
+      <div class="flex items-center gap-4">
+        <h2 class="text-2xl font-extrabold tracking-tight bg-gradient-to-r from-blue-600 to-violet-600 dark:from-blue-400 dark:to-violet-400 bg-clip-text text-transparent">SignSpeak AI</h2>
+        
+        <div class="flex bg-slate-100 dark:bg-slate-800 p-1 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-bold">
+          <button id="modeTranslateBtn" class="px-3 py-1.5 rounded-lg bg-white dark:bg-slate-700 shadow-sm text-blue-600 dark:text-blue-400 transition-all">
+            Live Translator
+          </button>
+          <button id="modePracticeBtn" class="px-3 py-1.5 rounded-lg text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white transition-all">
+            Practice Trainer 🎯
+          </button>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-4">
+        <button id="appThemeToggle" class="p-2 bg-slate-50 dark:bg-slate-800 rounded-full shadow-sm border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:scale-110 transition-all">
+          <svg class="sunIcon w-4 h-4 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+          <svg class="moonIcon w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
+        </button>
+        <button id="backToHomeBtn" class="text-sm text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors font-bold px-4 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800">
+          ← Back
+        </button>
+      </div>
+    </div>
+
+    <div class="flex justify-center space-x-4 mb-4">
+      <button id="startBtn" class="px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-lg shadow-blue-500/30 transition-all duration-200">
+        Start Camera & Translation
+      </button>
+      <button id="stopBtn" disabled class="px-8 py-3 bg-white dark:bg-slate-800 text-slate-400 font-bold rounded-xl shadow-sm transition-all duration-200 cursor-not-allowed border border-slate-200 dark:border-slate-700 hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-500 dark:hover:text-red-400">
+        Stop Translation
+      </button>
+      <button id="dictBtn" class="px-6 py-3 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 font-bold rounded-xl shadow-sm transition-all duration-200 border border-slate-200 dark:border-slate-700 flex items-center gap-2">
+        <span>📖</span> Dictionary
+      </button>
+    </div>
+
+    <div class="flex-1 grid grid-cols-1 md:grid-cols-10 gap-4 min-h-0">
+      
+      <section class="md:col-span-6 bg-white dark:bg-slate-900 rounded-[2rem] shadow-xl overflow-hidden relative border border-slate-200 dark:border-slate-800 flex flex-col">
+        <div id="subtitleBanner" class="absolute top-0 left-0 right-0 z-10 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md text-slate-800 dark:text-white px-4 py-3 text-sm md:text-base font-bold text-center transition-all border-b border-slate-200 dark:border-slate-800 shadow-sm">
+          Camera offline. Click "Start Camera & Translation"
+        </div>
+        
+        <div class="relative flex-1 bg-slate-900 overflow-hidden flex items-center justify-center">
+          <video id="webcam" autoplay playsinline class="w-full h-full object-cover [transform:scaleX(-1)]"></video>
+          <canvas id="captureCanvas" class="hidden"></canvas>
+
+          <div id="practiceCard" class="hidden absolute bottom-4 left-4 right-4 bg-white/95 dark:bg-slate-800/95 backdrop-blur-md p-4 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-xl flex items-center justify-between z-20 transition-all">
+            <div class="flex items-center gap-3">
+              <div id="targetBadge" class="w-12 h-12 rounded-xl bg-violet-100 dark:bg-violet-900/50 text-violet-600 dark:text-violet-400 flex items-center justify-center font-extrabold text-2xl shadow-inner">🎯</div>
+              <div>
+                <div class="text-[11px] uppercase font-extrabold tracking-wider text-slate-400">Practice Goal</div>
+                <div class="text-base md:text-lg font-extrabold text-slate-800 dark:text-white flex items-center gap-2">
+                  Perform: <span id="targetWordText" class="text-blue-600 dark:text-blue-400">Namaste</span>
+                  <span id="matchIcon" class="hidden text-emerald-500 font-bold">✓</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex items-center gap-3 w-52">
+              <div class="w-full">
+                <div class="flex justify-between text-xs font-bold text-slate-600 dark:text-slate-400 mb-1">
+                  <span>Match Accuracy</span>
+                  <span id="accuracyScore">0%</span>
+                </div>
+                <div class="w-full bg-slate-200 dark:bg-slate-700 h-2.5 rounded-full overflow-hidden p-0.5">
+                  <div id="accuracyBar" class="bg-blue-600 h-full w-0 transition-all duration-150 rounded-full"></div>
+                </div>
+              </div>
+              <button id="skipSignBtn" class="text-xs bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-600 dark:text-slate-300 px-3 py-2 rounded-xl font-bold transition-colors shrink-0">
+                Next ❯
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="md:col-span-4 bg-white dark:bg-slate-900 rounded-[2rem] shadow-xl p-5 flex flex-col min-h-0 border border-slate-200 dark:border-slate-800">
+        
+        <div class="flex justify-between items-center mb-3">
+          <h2 class="text-xs font-extrabold text-slate-400 uppercase tracking-widest">Voice to ISL output</h2>
+          <button id="micBtn" class="p-2.5 bg-slate-100 dark:bg-slate-800 hover:bg-violet-500 dark:hover:bg-violet-600 rounded-full text-slate-500 dark:text-slate-400 hover:text-white transition-all duration-300 shadow-sm" title="Click to Speak">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg>
+          </button>
+        </div>
+        
+        <div class="h-44 bg-slate-100 dark:bg-slate-950 rounded-2xl mb-4 flex items-center justify-center overflow-hidden border border-slate-200 dark:border-slate-800 relative shrink-0 shadow-inner">
+          <video id="signVideoPlayer" class="w-full h-full object-cover hidden" muted playsinline></video>
+          <div id="signVideoPlaceholder" class="text-center p-2">
+            <div class="text-3xl mb-1 opacity-50">🎙️</div>
+            <span class="text-slate-500 dark:text-slate-400 text-xs font-bold">Click the mic to test voice signs</span>
+          </div>
+        </div>
+
+        <div class="flex justify-between items-center mb-3">
+          <h2 class="text-xs font-extrabold text-slate-400 uppercase tracking-widest">Live Translation Log</h2>
+          <button id="exportBtn" class="text-xs bg-slate-100 dark:bg-slate-800 hover:bg-blue-50 dark:hover:bg-blue-900/30 text-blue-600 dark:text-blue-400 font-bold px-3 py-1 rounded-lg transition-colors border border-slate-200 dark:border-slate-700">
+            ↓ Export
+          </button>
+        </div>
+        <div id="chatLog" class="flex-1 overflow-y-auto space-y-2.5 pr-2 custom-scrollbar pb-3 bg-slate-50 dark:bg-slate-950 rounded-2xl p-3.5 border border-slate-100 dark:border-slate-800 shadow-inner"></div>
+      </section>
+    </div>
+  </div>
+
+  <!-- ================= DICTIONARY MODAL ================= -->
+  <div id="dictModal" class="hidden fixed inset-0 z-50 bg-slate-900/40 dark:bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 opacity-0 transition-opacity duration-300">
+    <div class="bg-white dark:bg-slate-900 rounded-3xl shadow-2xl max-w-md w-full p-8 transform scale-95 transition-transform duration-300 border border-slate-100 dark:border-slate-800">
+      <div class="flex justify-between items-center mb-6">
+        <h3 class="text-2xl font-bold text-slate-800 dark:text-white">Supported Signs</h3>
+        <button id="closeDictBtn" class="text-slate-400 hover:text-red-500 text-3xl font-bold transition-colors">&times;</button>
+      </div>
+      
+      <!-- UPDATED GRID WITH VIDEO TRIGGER BUTTONS -->
+      <div class="grid grid-cols-2 gap-4 text-slate-600 dark:text-slate-300 font-medium">
+        <button onclick="playSignVideo('Namaste.mp4')" class="bg-slate-50 dark:bg-slate-800 hover:bg-blue-50 dark:hover:bg-blue-900/30 p-3 rounded-xl border border-slate-200 dark:border-slate-700 text-center shadow-sm transition-colors">🙏 Namaste</button>
+        <button onclick="playSignVideo('Help.mp4')" class="bg-slate-50 dark:bg-slate-800 hover:bg-blue-50 dark:hover:bg-blue-900/30 p-3 rounded-xl border border-slate-200 dark:border-slate-700 text-center shadow-sm transition-colors">🤝 Help</button>
+        <button onclick="playSignVideo('Doctor.mp4')" class="bg-slate-50 dark:bg-slate-800 hover:bg-blue-50 dark:hover:bg-blue-900/30 p-3 rounded-xl border border-slate-200 dark:border-slate-700 text-center shadow-sm transition-colors">🩺 Doctor</button>
+        <button onclick="playSignVideo('Medicine.mp4')" class="bg-slate-50 dark:bg-slate-800 hover:bg-blue-50 dark:hover:bg-blue-900/30 p-3 rounded-xl border border-slate-200 dark:border-slate-700 text-center shadow-sm transition-colors">💊 Medicine</button>
+        <button onclick="playSignVideo('Water.mp4')" class="bg-slate-50 dark:bg-slate-800 hover:bg-blue-50 dark:hover:bg-blue-900/30 p-3 rounded-xl border border-slate-200 dark:border-slate-700 text-center shadow-sm transition-colors">💧 Water</button>
+        <button onclick="playSignVideo('Hello.mp4')" class="bg-slate-50 dark:bg-slate-800 hover:bg-blue-50 dark:hover:bg-blue-900/30 p-3 rounded-xl border border-slate-200 dark:border-slate-700 text-center shadow-sm transition-colors">👋 Hello</button>
+        <button onclick="playSignVideo('MyNameIs.mp4')" class="bg-slate-50 dark:bg-slate-800 hover:bg-blue-50 dark:hover:bg-blue-900/30 p-3 rounded-xl border border-slate-200 dark:border-slate-700 text-center shadow-sm transition-colors">👤 My Name Is</button>
+        <button onclick="playSignVideo('Krishna.mp4')" class="bg-slate-50 dark:bg-slate-800 hover:bg-blue-50 dark:hover:bg-blue-900/30 p-3 rounded-xl border border-slate-200 dark:border-slate-700 text-center shadow-sm transition-colors">🧑 Krishna</button>
+        <button onclick="playSignVideo('Sorry.mp4')" class="bg-slate-50 dark:bg-slate-800 hover:bg-blue-50 dark:hover:bg-blue-900/30 p-3 rounded-xl border border-slate-200 dark:border-slate-700 text-center shadow-sm transition-colors col-span-2">😔 Sorry</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= NEW VIDEO PLAYER MODAL ================= -->
+  <div id="video-modal" class="hidden fixed inset-0 z-[60] bg-slate-900/60 dark:bg-slate-950/90 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-slate-900 p-2 rounded-2xl shadow-2xl relative w-full max-w-lg border border-slate-200 dark:border-slate-800">
+        <button onclick="closeVideo()" class="absolute -top-4 -right-4 bg-red-500 hover:bg-red-600 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold shadow-lg transition-transform hover:scale-110">&times;</button>
+        <video id="sign-video-player" controls autoplay class="w-full rounded-xl bg-black">
+            <source src="" type="video/mp4">
+        </video>
+    </div>
+  </div>
+
+  <script>
+    // --- MULTI-BUTTON THEME TOGGLE LOGIC ---
+    const htmlEl = document.documentElement;
+    
+    function applyTheme(isDark) {
+      if (isDark) {
+        htmlEl.classList.add('dark');
+        document.querySelectorAll('.sunIcon').forEach(el => el.classList.remove('hidden'));
+        document.querySelectorAll('.moonIcon').forEach(el => el.classList.add('hidden'));
+      } else {
+        htmlEl.classList.remove('dark');
+        document.querySelectorAll('.sunIcon').forEach(el => el.classList.add('hidden'));
+        document.querySelectorAll('.moonIcon').forEach(el => el.classList.remove('hidden'));
+      }
+    }
+
+    if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      applyTheme(true);
+    } else {
+      applyTheme(false);
+    }
+
+    function toggleTheme() {
+      const isDark = htmlEl.classList.toggle('dark');
+      localStorage.theme = isDark ? 'dark' : 'light';
+      applyTheme(isDark);
+    }
+
+    document.getElementById('themeToggle').addEventListener('click', toggleTheme);
+    document.getElementById('appThemeToggle').addEventListener('click', toggleTheme);
+
+    // --- UI NAVIGATION & MODALS ---
+    const topNav = document.getElementById("topNav");
+    const landingPage = document.getElementById("landingPage");
+    const appInterface = document.getElementById("appInterface");
+    const enterAppBtn = document.getElementById("enterAppBtn");
+    const backToHomeBtn = document.getElementById("backToHomeBtn");
+    
+    const dictBtn = document.getElementById("dictBtn");
+    const dictModal = document.getElementById("dictModal");
+    const closeDictBtn = document.getElementById("closeDictBtn");
+    const modalContent = dictModal.querySelector("div");
+    const exportBtn = document.getElementById("exportBtn");
+
+    const modeTranslateBtn = document.getElementById("modeTranslateBtn");
+    const modePracticeBtn = document.getElementById("modePracticeBtn");
+    const practiceCard = document.getElementById("practiceCard");
+
+    enterAppBtn.addEventListener("click", () => {
+      landingPage.classList.add("opacity-0");
+      topNav.classList.add("opacity-0", "pointer-events-none"); 
+      setTimeout(() => {
+        landingPage.classList.add("hidden");
+        appInterface.classList.remove("hidden");
+        setTimeout(() => appInterface.classList.remove("opacity-0"), 50);
+      }, 500);
+    });
+
+    backToHomeBtn.addEventListener("click", () => {
+      if (isTranslating) stopBtn.click();
+      appInterface.classList.add("opacity-0");
+      setTimeout(() => {
+        appInterface.classList.add("hidden");
+        landingPage.classList.remove("hidden");
+        topNav.classList.remove("opacity-0", "pointer-events-none"); 
+        setTimeout(() => landingPage.classList.remove("opacity-0"), 50);
+      }, 500);
+    });
+
+    dictBtn.addEventListener("click", () => {
+      dictModal.classList.remove("hidden");
+      setTimeout(() => {
+        dictModal.classList.remove("opacity-0");
+        modalContent.classList.replace("scale-95", "scale-100");
+      }, 10);
+    });
+
+    closeDictBtn.addEventListener("click", () => {
+      dictModal.classList.add("opacity-0");
+      modalContent.classList.replace("scale-100", "scale-95");
+      setTimeout(() => dictModal.classList.add("hidden"), 300);
+    });
+
+    // --- VIDEO MODAL LOGIC ---
+    function playSignVideo(filename) {
+        const videoModal = document.getElementById('video-modal');
+        const videoPlayer = document.getElementById('sign-video-player');
+        
+        videoPlayer.src = `/videos/${filename}`; 
+        videoModal.classList.remove('hidden');
+    }
+
+    function closeVideo() {
+        const videoModal = document.getElementById('video-modal');
+        const videoPlayer = document.getElementById('sign-video-player');
+        
+        videoPlayer.pause();
+        videoPlayer.src = ""; 
+        videoModal.classList.add('hidden');
+    }
+
+    exportBtn.addEventListener("click", () => {
+      const logEntries = document.querySelectorAll("#chatLog div");
+      if (logEntries.length === 0) return alert("No translations to export yet!");
+      let transcript = "SignSpeak AI - Translation Transcript\n\n";
+      logEntries.forEach(entry => transcript += entry.innerText + "\n");
+      const blob = new Blob([transcript], { type: "text/plain" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `SignSpeak_Transcript_${new Date().getTime()}.txt`;
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+
+    // Mode Toggle
+    modeTranslateBtn.addEventListener("click", () => {
+      modeTranslateBtn.classList.add("bg-white", "dark:bg-slate-700", "shadow-sm", "text-blue-600", "dark:text-blue-400");
+      modeTranslateBtn.classList.remove("text-slate-500", "dark:text-slate-400");
+      modePracticeBtn.classList.remove("bg-white", "dark:bg-slate-700", "shadow-sm", "text-blue-600", "dark:text-blue-400");
+      modePracticeBtn.classList.add("text-slate-500", "dark:text-slate-400");
+      practiceCard.classList.add("hidden");
+    });
+
+    modePracticeBtn.addEventListener("click", () => {
+      modePracticeBtn.classList.add("bg-white", "dark:bg-slate-700", "shadow-sm", "text-blue-600", "dark:text-blue-400");
+      modePracticeBtn.classList.remove("text-slate-500", "dark:text-slate-400");
+      modeTranslateBtn.classList.remove("bg-white", "dark:bg-slate-700", "shadow-sm", "text-blue-600", "dark:text-blue-400");
+      modeTranslateBtn.classList.add("text-slate-500", "dark:text-slate-400");
+      practiceCard.classList.remove("hidden");
+    });
+
+    // --- PRACTICE MODE (UPDATED VOCABULARY) ---
+    const practiceVocabulary = ["Namaste", "Help", "Doctor", "Medicine", "Water", "Hello", "My Name Is", "Krishna", "Sorry"];
+    let practiceIdx = 0;
+    let targetHoldCounter = 0;
+    const targetWordText = document.getElementById("targetWordText");
+    const accuracyScore = document.getElementById("accuracyScore");
+    const accuracyBar = document.getElementById("accuracyBar");
+    const skipSignBtn = document.getElementById("skipSignBtn");
+    const matchIcon = document.getElementById("matchIcon");
+
+    function setPracticeGoal(index) {
+      practiceIdx = index % practiceVocabulary.length;
+      targetWordText.textContent = practiceVocabulary[practiceIdx];
+      targetWordText.className = "text-blue-600 dark:text-blue-400";
+      matchIcon.classList.add("hidden");
+      accuracyScore.textContent = "0%";
+      accuracyBar.style.width = "0%";
+      accuracyBar.className = "bg-blue-600 h-full transition-all duration-150 rounded-full";
+      targetHoldCounter = 0;
+    }
+
+    skipSignBtn.addEventListener("click", () => setPracticeGoal(practiceIdx + 1));
+
+    // --- CAMERA & WEBSOCKET ENGINE ---
+    const videoEl = document.getElementById("webcam");
+    const canvasEl = document.getElementById("captureCanvas");
+    const subtitleBanner = document.getElementById("subtitleBanner");
+    const chatLog = document.getElementById("chatLog");
+    const startBtn = document.getElementById("startBtn");
+    const stopBtn = document.getElementById("stopBtn");
+
+    const canvasCtx = canvasEl.getContext("2d");
+    let ws = null;
+    let isTranslating = false; 
+
+    function appendLog(text, type) {
+      const row = document.createElement("div");
+      if (type === "word") {
+        row.className = "bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-2 text-xs md:text-sm text-slate-600 dark:text-slate-300 font-bold w-max max-w-full shadow-sm";
+        row.textContent = text;
+      } else if (type === "sentence") {
+        row.className = "bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-500 rounded-r-xl px-4 py-3 text-sm md:text-base text-blue-800 dark:text-blue-200 font-extrabold my-2 shadow-md w-full";
+        row.textContent = text;
+      }
+      chatLog.appendChild(row);
+      chatLog.scrollTop = chatLog.scrollHeight;
+    }
+
+    function speakWord(word) {
+      if (!("speechSynthesis" in window)) return;
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(word);
+      window.speechSynthesis.speak(utterance);
+    }
+
+    function sendFrame() {
+      if (!isTranslating || !ws || ws.readyState !== WebSocket.OPEN) return;
+      if (videoEl.readyState < 2) return;
+      const width = videoEl.videoWidth;
+      const height = videoEl.videoHeight;
+      if (!width || !height) return;
+
+      if (canvasEl.width !== width || canvasEl.height !== height) {
+        canvasEl.width = width; canvasEl.height = height;
+      }
+      canvasCtx.drawImage(videoEl, 0, 0, width, height);
+      ws.send(canvasEl.toDataURL("image/jpeg", 0.7));
+    }
+
+    function connectWebSocket() {
+      const protocol = window.location.protocol === "https:" ? "wss" : "ws";
+      ws = new WebSocket(`${protocol}://${window.location.host}/ws`);
+      ws.onopen = () => sendFrame();
+      ws.onmessage = (event) => {
+        if (!isTranslating) return; 
+        try {
+          const data = JSON.parse(event.data);
+          if (data.type === "telemetry") {
+            const targetWord = practiceVocabulary[practiceIdx];
+            if (data.predicted_word === targetWord) {
+              const conf = data.confidence || 0;
+              accuracyScore.textContent = `${conf}%`;
+              accuracyBar.style.width = `${conf}%`;
+
+              if (conf >= 80) {
+                targetHoldCounter++;
+                accuracyBar.className = "bg-emerald-500 h-full transition-all duration-150 rounded-full";
+                
+                if (targetHoldCounter >= 3) {
+                  matchIcon.classList.remove("hidden");
+                  targetWordText.className = "text-emerald-600 dark:text-emerald-400";
+                  setTimeout(() => setPracticeGoal(practiceIdx + 1), 1100);
+                }
+              }
+            } else {
+              accuracyScore.textContent = "0%";
+              accuracyBar.style.width = "0%";
+              targetHoldCounter = 0;
+            }
+          }
+
+          if (data.type === "word") {
+            subtitleBanner.textContent = data.text;
+            appendLog(`Sign: ${data.text}`, "word");
+            speakWord(data.text);
+          } else if (data.type === "sentence") {
+            subtitleBanner.textContent = data.text;
+            appendLog(`${data.text}`, "sentence");
+            speakWord(data.text);
+          }
+        } catch (err) { }
+        sendFrame(); 
+      };
+      ws.onclose = () => { if (isTranslating) setTimeout(connectWebSocket, 1200); };
+    }
+
+    async function startCamera() {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: { width: 640, height: 480 }, audio: false });
+        videoEl.srcObject = stream;
+        await new Promise(resolve => videoEl.onloadedmetadata = () => resolve());
+        subtitleBanner.textContent = "Waiting for signs...";
+      } catch (err) {
+        subtitleBanner.textContent = "Camera access denied.";
+        isTranslating = false; 
+      }
+    }
+
+    function stopCameraAndSocket() {
+      isTranslating = false;
+      if (ws) { ws.close(); ws = null; }
+      if (videoEl.srcObject) {
+        videoEl.srcObject.getTracks().forEach(track => track.stop());
+        videoEl.srcObject = null;
+      }
+      subtitleBanner.textContent = "Camera offline. Click 'Start Camera & Translation'";
+    }
+
+    startBtn.addEventListener('click', async () => {
+      isTranslating = true;
+      startBtn.innerText = "Translating...";
+      startBtn.classList.replace("bg-blue-600", "bg-emerald-500");
+      startBtn.classList.replace("shadow-blue-500/30", "shadow-emerald-500/30");
+      startBtn.classList.remove("hover:bg-blue-700");
+      startBtn.disabled = true;
+      
+      stopBtn.disabled = false;
+      stopBtn.classList.replace("bg-white", "bg-red-500");
+      stopBtn.classList.replace("dark:bg-slate-800", "dark:bg-red-600");
+      stopBtn.classList.replace("text-slate-400", "text-white");
+      stopBtn.classList.replace("border-slate-200", "border-red-500");
+      stopBtn.classList.replace("dark:border-slate-700", "dark:border-red-600");
+      stopBtn.classList.add("hover:bg-red-600", "shadow-red-500/30");
+      
+      subtitleBanner.textContent = "Connecting camera...";
+      await startCamera();
+      if (isTranslating) connectWebSocket();
+    });
+
+    stopBtn.addEventListener('click', () => {
+      stopCameraAndSocket();
+      
+      startBtn.disabled = false;
+      startBtn.innerText = "Start Camera & Translation";
+      startBtn.classList.replace("bg-emerald-500", "bg-blue-600");
+      startBtn.classList.replace("shadow-emerald-500/30", "shadow-blue-500/30");
+      startBtn.classList.add("hover:bg-blue-700");
+      
+      stopBtn.disabled = true;
+      stopBtn.classList.replace("bg-red-500", "bg-white");
+      stopBtn.classList.replace("dark:bg-red-600", "dark:bg-slate-800");
+      stopBtn.classList.replace("text-white", "text-slate-400");
+      stopBtn.classList.replace("border-red-500", "border-slate-200");
+      stopBtn.classList.replace("dark:border-red-600", "dark:border-slate-700");
+      stopBtn.classList.remove("hover:bg-red-600", "shadow-red-500/30");
+    });
+
+    // --- VOICE TO ISL (WEB SPEECH API - UPDATED) ---
+    const micBtn = document.getElementById("micBtn");
+    const signVideoPlayer = document.getElementById("signVideoPlayer");
+    const signVideoPlaceholder = document.getElementById("signVideoPlaceholder");
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+    if (SpeechRecognition) {
+      const recognition = new SpeechRecognition();
+      recognition.continuous = false;
+      recognition.lang = "en-US";
+
+      // Updated dictionary
+      const voiceMap = {
+        "namaste": "Namaste", 
+        "help": "Help", 
+        "doctor": "Doctor", 
+        "medicine": "Medicine", 
+        "water": "Water", 
+        "hello": "Hello", 
+        "my name is": "MyNameIs", 
+        "krishna": "Krishna", 
+        "sorry": "Sorry"
+      };
+
+      recognition.onstart = () => {
+        micBtn.classList.replace("bg-slate-100", "bg-red-500");
+        micBtn.classList.replace("dark:bg-slate-800", "dark:bg-red-600");
+        micBtn.classList.replace("text-slate-500", "text-white");
+        micBtn.classList.replace("dark:text-slate-400", "dark:text-white");
+        
+        signVideoPlaceholder.innerHTML = `<div class="text-4xl mb-2 opacity-80 animate-pulse">🎙️</div><span class="text-violet-600 dark:text-violet-400 text-xs font-extrabold">Listening...</span>`;
+        signVideoPlayer.classList.add("hidden");
+        signVideoPlaceholder.classList.remove("hidden");
+      };
+
+      recognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript.toLowerCase().replace(/[.,!?]/g, "");
+        appendLog(`🎤 Heard: "${transcript}"`, "word"); 
+        
+        let foundVideo = null;
+        for (const [phrase, filename] of Object.entries(voiceMap)) {
+          if (transcript.includes(phrase)) { foundVideo = filename; break; }
+        }
+
+        if (foundVideo) {
+          signVideoPlaceholder.classList.add("hidden");
+          signVideoPlayer.classList.remove("hidden");
+          signVideoPlayer.src = `/videos/${foundVideo}.mp4`;
+          signVideoPlayer.play();
+        } else {
+          signVideoPlaceholder.innerHTML = `<div class="text-3xl mb-2 opacity-40">🤷</div><span class="text-slate-500 dark:text-slate-400 text-xs font-bold">No sign found for:<br/>"${transcript}"</span>`;
+        }
+      };
+
+      recognition.onend = () => {
+        micBtn.classList.replace("bg-red-500", "bg-slate-100");
+        micBtn.classList.replace("dark:bg-red-600", "dark:bg-slate-800");
+        micBtn.classList.replace("text-white", "text-slate-500");
+        micBtn.classList.replace("dark:text-white", "dark:text-slate-400");
+      };
+      micBtn.addEventListener("click", () => recognition.start());
+    } else {
+      micBtn.style.display = "none";
+      signVideoPlaceholder.innerHTML = `<span class="text-red-500 text-xs font-bold">Speech API not supported.</span>`;
+    }
+  </script>
+</body>
+</html>
