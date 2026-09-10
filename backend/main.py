@@ -85,18 +85,29 @@ holistic = mp_holistic.Holistic(
 )
 
 def _extract_keypoints(results) -> np.ndarray:
+    # 1. Left Hand: Wrist shift & bounding box scaling
     lh = np.zeros(21 * 3)
     if results.left_hand_landmarks:
         wrist = results.left_hand_landmarks.landmark[0]
-        lh = np.array([[res.x - wrist.x, res.y - wrist.y, res.z - wrist.z] 
-                       for res in results.left_hand_landmarks.landmark]).flatten()
+        lh_coords = np.array([[res.x - wrist.x, res.y - wrist.y, res.z - wrist.z] 
+                              for res in results.left_hand_landmarks.landmark])
+        max_val = np.max(np.abs(lh_coords))
+        if max_val > 0:
+            lh_coords = lh_coords / max_val
+        lh = lh_coords.flatten()
         
+    # 2. Right Hand: Wrist shift & bounding box scaling
     rh = np.zeros(21 * 3)
     if results.right_hand_landmarks:
         wrist = results.right_hand_landmarks.landmark[0]
-        rh = np.array([[res.x - wrist.x, res.y - wrist.y, res.z - wrist.z] 
-                       for res in results.right_hand_landmarks.landmark]).flatten()
+        rh_coords = np.array([[res.x - wrist.x, res.y - wrist.y, res.z - wrist.z] 
+                              for res in results.right_hand_landmarks.landmark])
+        max_val = np.max(np.abs(rh_coords))
+        if max_val > 0:
+            rh_coords = rh_coords / max_val
+        rh = rh_coords.flatten()
 
+    # 3. Pose: Vectors scaled by shoulder width
     pose_features = np.zeros(18)
     if results.pose_landmarks:
         pose = results.pose_landmarks.landmark
@@ -109,12 +120,16 @@ def _extract_keypoints(results) -> np.ndarray:
         lw_nose = l_wr - nose
         lw_lsh = l_wr - l_sh
         lw_rsh = l_wr - r_sh
-        
         rw_nose = r_wr - nose
         rw_lsh = r_wr - l_sh
         rw_rsh = r_wr - r_sh
+        raw_pose = np.concatenate([lw_nose, lw_lsh, lw_rsh, rw_nose, rw_lsh, rw_rsh])
         
-        pose_features = np.concatenate([lw_nose, lw_lsh, lw_rsh, rw_nose, rw_lsh, rw_rsh])
+        shoulder_width = np.linalg.norm(l_sh - r_sh)
+        if shoulder_width > 0:
+            pose_features = raw_pose / shoulder_width
+        else:
+            pose_features = raw_pose
 
     return np.concatenate([lh, rh, pose_features])
 

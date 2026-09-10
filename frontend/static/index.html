@@ -3,226 +3,535 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SignSpeak AI - ISL Translator & Practice</title>
+  <title>SignSpeak AI — Bridging Silence and Speech in Real Time</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = { darkMode: 'class' }
   </script>
   <style>
-    .custom-scrollbar::-webkit-scrollbar { width: 8px; }
+    .custom-scrollbar::-webkit-scrollbar { width: 6px; }
     .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
     .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
     .dark .custom-scrollbar::-webkit-scrollbar-thumb { background: #475569; }
     
-    .bg-pattern {
-      background-image: radial-gradient(#cbd5e1 1px, transparent 1px);
-      background-size: 32px 32px;
+    .bg-grid-pattern {
+      background-image: radial-gradient(rgba(99, 102, 241, 0.15) 1px, transparent 1px);
+      background-size: 24px 24px;
     }
-    .dark .bg-pattern {
-      background-image: radial-gradient(#334155 1px, transparent 1px);
+    .dark .bg-grid-pattern {
+      background-image: radial-gradient(rgba(129, 140, 248, 0.1) 1px, transparent 1px);
     }
   </style>
 </head>
-<body class="bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 min-h-screen font-sans selection:bg-blue-500 selection:text-white relative bg-pattern transition-colors duration-300">
+<body class="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-sans antialiased selection:bg-indigo-600 selection:text-white transition-colors duration-300">
 
-  <!-- TOP NAVIGATION -->
-  <nav id="topNav" class="absolute top-0 left-0 right-0 p-6 flex justify-end items-center gap-6 z-50 transition-opacity duration-300">
-    <a href="about.html" class="text-sm font-bold text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">About</a>
-    <a href="contact.html" class="text-sm font-bold text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Contact</a>
-    <button id="themeToggle" class="p-2 bg-white dark:bg-slate-800 rounded-full shadow-sm border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:scale-110 transition-all">
-      <svg class="sunIcon w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
-      <svg class="moonIcon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
-    </button>
-  </nav>
-
-  <!-- ================= LANDING PAGE ================= -->
-  <div id="landingPage" class="min-h-screen flex flex-col items-center justify-center p-6 relative overflow-hidden transition-opacity duration-500">
-    <div class="absolute top-0 left-0 w-[600px] h-[600px] bg-blue-400/20 rounded-full blur-[100px] pointer-events-none"></div>
-    <div class="absolute bottom-0 right-0 w-[600px] h-[600px] bg-violet-400/20 rounded-full blur-[100px] pointer-events-none"></div>
-
-    <div class="z-10 text-center max-w-6xl mx-auto mt-12">
-      <h1 class="text-6xl md:text-7xl font-extrabold tracking-tight mb-6 text-slate-900 dark:text-white">
-        Bridging the gap with <br/>
-        <span class="bg-gradient-to-r from-blue-600 to-violet-600 dark:from-blue-400 dark:to-violet-400 bg-clip-text text-transparent drop-shadow-sm">SignSpeak AI</span>
-      </h1>
-
-      <p class="text-lg md:text-xl text-slate-600 dark:text-slate-400 mb-16 max-w-2xl mx-auto leading-relaxed font-medium">
-        A real-time, bidirectional Indian Sign Language (ISL) translator and interactive learning trainer. Convert signs into fluent English sentences, and practice gestures with live neural feedback.
-      </p>
-
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16 text-left">
-        <div class="group bg-white dark:bg-slate-900 p-8 rounded-[2rem] border border-slate-100 dark:border-slate-800 shadow-xl shadow-slate-200/50 dark:shadow-none transition-all duration-300 hover:-translate-y-4 hover:shadow-2xl hover:shadow-blue-500/10 cursor-default">
-          <div class="w-16 h-16 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-2xl flex items-center justify-center text-3xl mb-6 shadow-sm transition-transform duration-300 group-hover:scale-110 group-hover:rotate-6">🖐️</div>
-          <h3 class="text-2xl font-bold text-slate-900 dark:text-white mb-3">Sign to Speech</h3>
-          <p class="text-slate-500 dark:text-slate-400 leading-relaxed font-medium">Detects ISL keypoints in real-time using MediaPipe & an LSTM neural network directly in your browser.</p>
-        </div>
-
-        <div class="group bg-white dark:bg-slate-900 p-8 rounded-[2rem] border border-slate-100 dark:border-slate-800 shadow-xl shadow-slate-200/50 dark:shadow-none transition-all duration-300 hover:-translate-y-4 hover:shadow-2xl hover:shadow-violet-500/10 cursor-default">
-          <div class="w-16 h-16 bg-violet-50 dark:bg-violet-900/30 text-violet-600 dark:text-violet-400 rounded-2xl flex items-center justify-center text-3xl mb-6 shadow-sm transition-transform duration-300 group-hover:scale-110 group-hover:-rotate-6">🎯</div>
-          <h3 class="text-2xl font-bold text-slate-900 dark:text-white mb-3">Practice Mode</h3>
-          <p class="text-slate-500 dark:text-slate-400 leading-relaxed font-medium">Gamified learning trainer giving instant feedback and accuracy scoring on your hand postures.</p>
-        </div>
-
-        <div class="group bg-white dark:bg-slate-900 p-8 rounded-[2rem] border border-slate-100 dark:border-slate-800 shadow-xl shadow-slate-200/50 dark:shadow-none transition-all duration-300 hover:-translate-y-4 hover:shadow-2xl hover:shadow-emerald-500/10 cursor-default">
-          <div class="w-16 h-16 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 rounded-2xl flex items-center justify-center text-3xl mb-6 shadow-sm transition-transform duration-300 group-hover:scale-110 group-hover:rotate-6">🎙️</div>
-          <h3 class="text-2xl font-bold text-slate-900 dark:text-white mb-3">Speech to Sign</h3>
-          <p class="text-slate-500 dark:text-slate-400 leading-relaxed font-medium">Speak into your mic to instantly pull and display matching visual ISL demonstrations.</p>
-        </div>
-      </div>
-
-      <button id="enterAppBtn" class="group relative px-10 py-5 bg-gradient-to-r from-blue-600 to-violet-600 hover:from-blue-700 hover:to-violet-700 text-white text-xl font-bold rounded-full transition-all duration-300 hover:scale-105 shadow-xl shadow-blue-500/30">
-        Launch Workspace
-        <span class="inline-block ml-2 transition-transform duration-300 group-hover:translate-x-2">→</span>
-      </button>
-    </div>
-  </div>
-
-  <!-- ================= WORKSPACE INTERFACE ================= -->
-  <div id="appInterface" class="hidden h-screen p-4 flex flex-col transition-opacity duration-500 opacity-0 relative z-10">
-    
-    <div class="flex justify-between items-center mb-4 px-4 py-3 bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800">
-      <div class="flex items-center gap-4">
-        <h2 class="text-2xl font-extrabold tracking-tight bg-gradient-to-r from-blue-600 to-violet-600 dark:from-blue-400 dark:to-violet-400 bg-clip-text text-transparent">SignSpeak AI</h2>
-        
-        <div class="flex bg-slate-100 dark:bg-slate-800 p-1 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-bold">
-          <button id="modeTranslateBtn" class="px-3 py-1.5 rounded-lg bg-white dark:bg-slate-700 shadow-sm text-blue-600 dark:text-blue-400 transition-all">
-            Live Translator
-          </button>
-          <button id="modePracticeBtn" class="px-3 py-1.5 rounded-lg text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white transition-all">
-            Practice Trainer 🎯
-          </button>
-        </div>
-      </div>
-
-      <div class="flex items-center gap-4">
-        <button id="appThemeToggle" class="p-2 bg-slate-50 dark:bg-slate-800 rounded-full shadow-sm border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:scale-110 transition-all">
-          <svg class="sunIcon w-4 h-4 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
-          <svg class="moonIcon w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
-        </button>
-        <button id="backToHomeBtn" class="text-sm text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors font-bold px-4 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800">
-          ← Back
-        </button>
-      </div>
-    </div>
-
-    <div class="flex justify-center space-x-4 mb-4">
-      <button id="startBtn" class="px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-lg shadow-blue-500/30 transition-all duration-200">
-        Start Camera & Translation
-      </button>
-      <button id="stopBtn" disabled class="px-8 py-3 bg-white dark:bg-slate-800 text-slate-400 font-bold rounded-xl shadow-sm transition-all duration-200 cursor-not-allowed border border-slate-200 dark:border-slate-700 hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-500 dark:hover:text-red-400">
-        Stop Translation
-      </button>
-      <button id="dictBtn" class="px-6 py-3 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 font-bold rounded-xl shadow-sm transition-all duration-200 border border-slate-200 dark:border-slate-700 flex items-center gap-2">
-        <span>📖</span> Dictionary
-      </button>
-    </div>
-
-    <div class="flex-1 grid grid-cols-1 md:grid-cols-10 gap-4 min-h-0">
+  <!-- ================= TOP NAVIGATION ================= -->
+  <header class="sticky top-0 z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200/80 dark:border-slate-800">
+    <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
       
-      <section class="md:col-span-6 bg-white dark:bg-slate-900 rounded-[2rem] shadow-xl overflow-hidden relative border border-slate-200 dark:border-slate-800 flex flex-col">
-        <div id="subtitleBanner" class="absolute top-0 left-0 right-0 z-10 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md text-slate-800 dark:text-white px-4 py-3 text-sm md:text-base font-bold text-center transition-all border-b border-slate-200 dark:border-slate-800 shadow-sm">
-          Camera offline. Click "Start Camera & Translation"
-        </div>
-        
-        <div class="relative flex-1 bg-slate-900 overflow-hidden flex items-center justify-center">
-          <video id="webcam" autoplay playsinline class="w-full h-full object-cover [transform:scaleX(-1)]"></video>
-          <canvas id="captureCanvas" class="hidden"></canvas>
+      <!-- Logo -->
+      <a href="#" onclick="switchView('home')" class="flex items-center gap-3 group">
+        <div class="w-10 h-10 bg-gradient-to-tr from-indigo-600 to-violet-600 rounded-xl flex items-center justify-center text-white font-extrabold text-xl shadow-lg shadow-indigo-500/20 group-hover:scale-105 transition-transform">S</div>
+        <span class="text-xl font-extrabold tracking-tight bg-gradient-to-r from-slate-900 to-slate-700 dark:from-white dark:to-slate-300 bg-clip-text text-transparent">SignSpeak</span>
+      </a>
 
-          <div id="practiceCard" class="hidden absolute bottom-4 left-4 right-4 bg-white/95 dark:bg-slate-800/95 backdrop-blur-md p-4 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-xl flex items-center justify-between z-20 transition-all">
-            <div class="flex items-center gap-3">
-              <div id="targetBadge" class="w-12 h-12 rounded-xl bg-violet-100 dark:bg-violet-900/50 text-violet-600 dark:text-violet-400 flex items-center justify-center font-extrabold text-2xl shadow-inner">🎯</div>
-              <div>
-                <div class="text-[11px] uppercase font-extrabold tracking-wider text-slate-400">Practice Goal</div>
-                <div class="text-base md:text-lg font-extrabold text-slate-800 dark:text-white flex items-center gap-2">
-                  Perform: <span id="targetWordText" class="text-blue-600 dark:text-blue-400">Namaste</span>
-                  <span id="matchIcon" class="hidden text-emerald-500 font-bold">✓</span>
+      <!-- Nav Links -->
+      <nav class="hidden md:flex items-center gap-8 text-sm font-bold text-slate-600 dark:text-slate-300">
+        <button onclick="switchView('home')" class="nav-link text-indigo-600 dark:text-indigo-400 transition-colors hover:text-indigo-600">Home</button>
+        <button onclick="switchView('about')" class="nav-link hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">About Us</button>
+        <button onclick="switchView('workspace')" class="nav-link hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">Live Translator</button>
+        <button onclick="switchView('howItWorks')" class="nav-link hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">How It Works</button>
+        <button onclick="switchView('contact')" class="nav-link hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">Contact</button>
+      </nav>
+
+      <!-- Right Actions -->
+      <div class="flex items-center gap-4">
+        <!-- Language Pill -->
+        <div class="hidden lg:flex items-center gap-2 bg-slate-100 dark:bg-slate-800 px-3 py-1.5 rounded-full text-xs font-extrabold border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300">
+          <span>🇮🇳 ISL</span>
+          <span class="text-slate-400">⇄</span>
+          <span>ENGLISH</span>
+        </div>
+
+        <!-- Theme Toggle -->
+        <button id="themeToggle" class="p-2.5 bg-slate-100 dark:bg-slate-800 rounded-full border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:scale-105 transition-all">
+          <svg class="sunIcon w-4 h-4 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+          <svg class="moonIcon w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
+        </button>
+
+        <!-- Try Live CTA Button -->
+        <button onclick="switchView('workspace')" class="bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold px-5 py-2.5 rounded-xl shadow-lg shadow-indigo-600/30 text-sm transition-all hover:scale-105">
+          Try Live 🚀
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ================= VIEW CONTAINER ================= -->
+  <main id="mainContainer">
+
+    <!-- 1. HOME VIEW -->
+    <div id="viewHome" class="view-section transition-opacity duration-300 opacity-100">
+      <!-- Hero Section -->
+      <section class="relative pt-16 pb-24 overflow-hidden bg-grid-pattern">
+        <div class="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[500px] bg-indigo-500/10 dark:bg-indigo-500/5 blur-[140px] rounded-full pointer-events-none"></div>
+        
+        <div class="max-w-7xl mx-auto px-6 relative z-10">
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center mb-16">
+            
+            <div class="lg:col-span-7">
+              <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200/80 dark:border-indigo-800 text-indigo-600 dark:text-indigo-400 text-xs font-extrabold mb-6">
+                <span class="w-2 h-2 rounded-full bg-indigo-600 animate-pulse"></span>
+                BIPOLAR ACCESSIBILITY PIPELINE v4.2 LIVE
+              </div>
+              
+              <h1 class="text-5xl sm:text-6xl lg:text-7xl font-black tracking-tight leading-[1.08] mb-6">
+                Bridging Silence and Speech in <span class="bg-gradient-to-r from-indigo-600 via-purple-600 to-violet-600 bg-clip-text text-transparent">Real Time</span>
+              </h1>
+              
+              <p class="text-lg sm:text-xl text-slate-600 dark:text-slate-400 font-medium mb-10 max-w-2xl leading-relaxed">
+                AI-powered bidirectional translation between Indian Sign Language (ISL) and spoken speech. Anatomy, accessibility, and precision built for clinical environments.
+              </p>
+
+              <div class="flex flex-wrap items-center gap-4">
+                <button onclick="switchView('workspace')" class="px-8 py-4 bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold rounded-2xl shadow-xl shadow-indigo-600/30 transition-all hover:scale-105 flex items-center gap-3">
+                  <span>Try Live Translator Free</span>
+                  <span>→</span>
+                </button>
+                <button onclick="switchView('howItWorks')" class="px-8 py-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 font-extrabold rounded-2xl transition-all shadow-sm">
+                  Explore Architecture
+                </button>
+              </div>
+
+              <div class="mt-10 flex items-center gap-8 text-xs font-bold text-slate-400">
+                <div class="flex items-center gap-2">✓ Zero Cloud Video Retention</div>
+                <div class="flex items-center gap-2">✓ On-Device Edge AI</div>
+                <div class="flex items-center gap-2">✓ HIPAA & GDPR Compliant</div>
+              </div>
+            </div>
+
+            <!-- Hero Metric Card / Preview Box -->
+            <div class="lg:col-span-5">
+              <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 rounded-3xl shadow-2xl relative">
+                <div class="absolute -top-4 -right-4 bg-emerald-500 text-white text-xs font-black px-4 py-1.5 rounded-full shadow-lg">
+                  180 TPS
+                </div>
+                <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4">Live Inference Benchmark</p>
+                
+                <div class="bg-slate-900 rounded-2xl p-4 text-white mb-6 border border-slate-800 relative overflow-hidden">
+                  <div class="absolute inset-0 bg-indigo-600/10 pointer-events-none"></div>
+                  <div class="flex items-center justify-between text-xs text-indigo-400 font-bold mb-3">
+                    <span>WEBGL HARDWARE ACCELERATED</span>
+                    <span class="animate-pulse text-emerald-400">● Active</span>
+                  </div>
+                  <div class="text-sm font-mono text-slate-300">
+                    "Namaste, pleased to meet you. Would you care for a consultation?"
+                  </div>
+                </div>
+
+                <div class="flex items-center justify-between pt-4 border-t border-slate-100 dark:border-slate-800 text-xs font-bold">
+                  <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-full bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 flex items-center justify-center font-black">KC</div>
+                    <div>
+                      <div class="text-slate-900 dark:text-white">Krishna Chaudhary</div>
+                      <div class="text-slate-400 font-medium">AI/ML Engineering Lead</div>
+                    </div>
+                  </div>
+                  <span class="text-indigo-600 dark:text-indigo-400">Verified System →</span>
                 </div>
               </div>
             </div>
 
-            <div class="flex items-center gap-3 w-52">
-              <div class="w-full">
-                <div class="flex justify-between text-xs font-bold text-slate-600 dark:text-slate-400 mb-1">
-                  <span>Match Accuracy</span>
-                  <span id="accuracyScore">0%</span>
-                </div>
-                <div class="w-full bg-slate-200 dark:bg-slate-700 h-2.5 rounded-full overflow-hidden p-0.5">
-                  <div id="accuracyBar" class="bg-blue-600 h-full w-0 transition-all duration-150 rounded-full"></div>
-                </div>
-              </div>
-              <button id="skipSignBtn" class="text-xs bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-600 dark:text-slate-300 px-3 py-2 rounded-xl font-bold transition-colors shrink-0">
-                Next ❯
-              </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Features Pillars Section -->
+      <section class="py-24 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800">
+        <div class="max-w-7xl mx-auto px-6">
+          <div class="text-center max-w-3xl mx-auto mb-16">
+            <h2 class="text-xs font-black text-indigo-600 tracking-widest uppercase mb-3">CONVERSATIONS FLOW BOTH WAYS</h2>
+            <h3 class="text-3xl sm:text-4xl font-extrabold tracking-tight mb-4">Precision Engineered for Natural Communication</h3>
+            <p class="text-slate-600 dark:text-slate-400 font-medium">Our dual-model engine connects sign language to spoken speech and speech to visual signs instantly.</p>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <!-- Pillar 1 -->
+            <div class="bg-slate-50 dark:bg-slate-950 p-8 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm">
+              <div class="w-14 h-14 bg-indigo-50 dark:bg-indigo-950 text-indigo-600 rounded-2xl flex items-center justify-center text-2xl font-bold mb-6">🖐️</div>
+              <h4 class="text-2xl font-extrabold mb-3">Sign-to-Speech Synthesis</h4>
+              <p class="text-slate-600 dark:text-slate-400 text-sm mb-6 leading-relaxed">Raw frequency-minimized skeletal hand kinematics and facial expressions translated into polite, grammatically coherent sentences.</p>
+              <ul class="space-y-3 text-sm font-semibold text-slate-700 dark:text-slate-300">
+                <li class="flex items-center gap-2 text-indigo-600 dark:text-indigo-400">✓ 144 Keypoint MediaPipe Tracking</li>
+                <li class="flex items-center gap-2 text-indigo-600 dark:text-indigo-400">✓ LSTM Spatial-Temporal Sequence Neural Net</li>
+                <li class="flex items-center gap-2 text-indigo-600 dark:text-indigo-400">✓ Gemini AI NLP Sentence Formulation</li>
+              </ul>
+            </div>
+
+            <!-- Pillar 2 -->
+            <div class="bg-slate-50 dark:bg-slate-950 p-8 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm">
+              <div class="w-14 h-14 bg-purple-50 dark:bg-purple-950 text-purple-600 rounded-2xl flex items-center justify-center text-2xl font-bold mb-6">🎙️</div>
+              <h4 class="text-2xl font-extrabold mb-3">Speech-to-Sign & Visual Gloss</h4>
+              <p class="text-slate-600 dark:text-slate-400 text-sm mb-6 leading-relaxed">Custom word-to-sign neural map instantly queries and triggers high-fidelity 3D avatar animations and reference sign cards.</p>
+              <ul class="space-y-3 text-sm font-semibold text-slate-700 dark:text-slate-300">
+                <li class="flex items-center gap-2 text-purple-600 dark:text-purple-400">✓ Instant Audio-to-Keyword Mapping</li>
+                <li class="flex items-center gap-2 text-purple-600 dark:text-purple-400">✓ 3D Blender Rigged MP4 Sign Library</li>
+                <li class="flex items-center gap-2 text-purple-600 dark:text-purple-400">✓ Zero-Latency Cloudless Playback</li>
+              </ul>
             </div>
           </div>
         </div>
       </section>
 
-      <section class="md:col-span-4 bg-white dark:bg-slate-900 rounded-[2rem] shadow-xl p-5 flex flex-col min-h-0 border border-slate-200 dark:border-slate-800">
-        
-        <div class="flex justify-between items-center mb-3">
-          <h2 class="text-xs font-extrabold text-slate-400 uppercase tracking-widest">Voice to ISL output</h2>
-          <button id="micBtn" class="p-2.5 bg-slate-100 dark:bg-slate-800 hover:bg-violet-500 dark:hover:bg-violet-600 rounded-full text-slate-500 dark:text-slate-400 hover:text-white transition-all duration-300 shadow-sm" title="Click to Speak">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg>
-          </button>
-        </div>
-        
-        <div class="h-44 bg-slate-100 dark:bg-slate-950 rounded-2xl mb-4 flex items-center justify-center overflow-hidden border border-slate-200 dark:border-slate-800 relative shrink-0 shadow-inner">
-          <video id="signVideoPlayer" class="w-full h-full object-cover hidden" muted playsinline></video>
-          <div id="signVideoPlaceholder" class="text-center p-2">
-            <div class="text-3xl mb-1 opacity-50">🎙️</div>
-            <span class="text-slate-500 dark:text-slate-400 text-xs font-bold">Click the mic to test voice signs</span>
+      <!-- Use Cases Grid (WITH HOVER EFFECTS) -->
+      <section class="py-24 bg-slate-50 dark:bg-slate-950">
+        <div class="max-w-7xl mx-auto px-6">
+          <div class="text-center max-w-3xl mx-auto mb-16">
+            <h2 class="text-xs font-black text-indigo-600 tracking-widest uppercase mb-3">EMPOWERING CONVERSATIONS EVERYWHERE</h2>
+            <h3 class="text-3xl sm:text-4xl font-extrabold tracking-tight mb-4">Designed for Critical Environments</h3>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div class="group bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm hover:-translate-y-2 hover:shadow-2xl hover:shadow-indigo-500/20 transition-all duration-300 cursor-pointer">
+              <div class="text-3xl mb-4 transition-transform group-hover:scale-110 group-hover:-rotate-6 origin-bottom-left">🏥</div>
+              <h5 class="text-lg font-bold mb-2">Hospitals & Clinics</h5>
+              <p class="text-xs text-slate-500 leading-relaxed">Instant emergency clinical triage without sign-language interpreter delays.</p>
+            </div>
+            <div class="group bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm hover:-translate-y-2 hover:shadow-2xl hover:shadow-indigo-500/20 transition-all duration-300 cursor-pointer">
+              <div class="text-3xl mb-4 transition-transform group-hover:scale-110 group-hover:rotate-6 origin-bottom-left">🏛️</div>
+              <h5 class="text-lg font-bold mb-2">Banks & Citizen Desks</h5>
+              <p class="text-xs text-slate-500 leading-relaxed">Seamless public service counters with full accessibility compliance.</p>
+            </div>
+            <div class="group bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm hover:-translate-y-2 hover:shadow-2xl hover:shadow-indigo-500/20 transition-all duration-300 cursor-pointer">
+              <div class="text-3xl mb-4 transition-transform group-hover:scale-110 group-hover:-rotate-6 origin-bottom-left">🎓</div>
+              <h5 class="text-lg font-bold mb-2">Higher Education</h5>
+              <p class="text-xs text-slate-500 leading-relaxed">Lecture halls and campus seminar accessibility for Deaf and hard-of-hearing students.</p>
+            </div>
+            <div class="group bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm hover:-translate-y-2 hover:shadow-2xl hover:shadow-indigo-500/20 transition-all duration-300 cursor-pointer">
+              <div class="text-3xl mb-4 transition-transform group-hover:scale-110 group-hover:rotate-6 origin-bottom-left">☕</div>
+              <h5 class="text-lg font-bold mb-2">Family & Social Life</h5>
+              <p class="text-xs text-slate-500 leading-relaxed">Uninterrupted personal conversations across family dinners and social gatherings.</p>
+            </div>
           </div>
         </div>
-
-        <div class="flex justify-between items-center mb-3">
-          <h2 class="text-xs font-extrabold text-slate-400 uppercase tracking-widest">Live Translation Log</h2>
-          <button id="exportBtn" class="text-xs bg-slate-100 dark:bg-slate-800 hover:bg-blue-50 dark:hover:bg-blue-900/30 text-blue-600 dark:text-blue-400 font-bold px-3 py-1 rounded-lg transition-colors border border-slate-200 dark:border-slate-700">
-            ↓ Export
-          </button>
-        </div>
-        <div id="chatLog" class="flex-1 overflow-y-auto space-y-2.5 pr-2 custom-scrollbar pb-3 bg-slate-50 dark:bg-slate-950 rounded-2xl p-3.5 border border-slate-100 dark:border-slate-800 shadow-inner"></div>
       </section>
     </div>
-  </div>
+
+
+    <!-- 2. LIVE WORKSPACE VIEW -->
+    <div id="viewWorkspace" class="view-section hidden h-[calc(100vh-80px)] flex-col p-4 bg-slate-50 dark:bg-slate-950 transition-opacity duration-300 opacity-0">
+      
+      <!-- Workspace Subheader / Mode Bar -->
+      <div class="flex items-center justify-between mb-4 bg-white dark:bg-slate-900 px-6 py-3 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm shrink-0">
+        <div class="flex items-center gap-4">
+          <h2 class="text-lg font-extrabold text-indigo-600 dark:text-indigo-400">Workspace Dashboard</h2>
+          <div class="flex bg-slate-100 dark:bg-slate-800 p-1 rounded-xl text-xs font-bold">
+            <button onclick="setWorkspaceMode('translate')" id="modeTranslateBtn" class="px-3 py-1.5 rounded-lg bg-white dark:bg-slate-700 shadow-sm text-indigo-600 dark:text-indigo-400 transition-colors">Live Translator</button>
+            <button onclick="setWorkspaceMode('practice')" id="modePracticeBtn" class="px-3 py-1.5 rounded-lg text-slate-500 hover:text-slate-800 dark:hover:text-white transition-colors">Practice Trainer 🎯</button>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-4">
+          <button onclick="openDictionaryModal()" class="text-xs font-extrabold bg-slate-100 dark:bg-slate-800 hover:bg-indigo-50 px-4 py-2 rounded-xl transition-colors border border-slate-200 dark:border-slate-700">📖 Dictionary</button>
+          <button id="startBtn" class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold text-xs rounded-xl shadow-md shadow-indigo-600/30 transition-all">▶ Start Camera</button>
+          <button id="stopBtn" class="hidden px-5 py-2.5 bg-red-500 hover:bg-red-600 text-white font-extrabold text-xs rounded-xl shadow-md transition-all">■ End Session</button>
+        </div>
+      </div>
+
+      <!-- Main Split Workspace (UPDATED GRID SPANS FOR LARGER CAMERA) -->
+      <div class="flex-1 grid grid-cols-1 md:grid-cols-12 gap-4 min-h-0">
+        
+        <!-- Left Camera Feed & Subtitles (8 cols instead of 7) -->
+        <div class="md:col-span-8 flex flex-col gap-4 min-h-0">
+          <div class="flex-1 bg-slate-900 rounded-3xl overflow-hidden relative shadow-md flex items-center justify-center border border-slate-200 dark:border-slate-800">
+            <!-- Status Pill -->
+            <div class="absolute top-4 left-4 z-20 flex items-center gap-2 bg-slate-900/70 backdrop-blur-md text-white px-3 py-1.5 rounded-full text-xs font-bold border border-slate-700">
+              <div id="camStatusDot" class="w-2 h-2 rounded-full bg-slate-400"></div>
+              <span id="camStatusText">Camera Offline</span>
+            </div>
+
+            <!-- Offline Placeholder -->
+            <div id="cameraOffline" class="flex flex-col items-center justify-center text-slate-400">
+              <div class="w-32 h-32 border-2 border-dashed border-slate-700 rounded-full flex items-center justify-center mb-4 text-3xl">🖐️</div>
+              <span class="text-sm font-semibold text-slate-300">Sign naturally in front of camera</span>
+            </div>
+
+            <!-- UPDATED CSS: object-contain allows the full camera capture area to be visible without cropping -->
+            <video id="webcam" autoplay playsinline class="hidden w-full h-full object-contain bg-black [transform:scaleX(-1)]"></video>
+            <canvas id="captureCanvas" class="hidden"></canvas>
+
+            <!-- PRACTICE CARD OVERLAY -->
+            <div id="practiceCard" class="hidden absolute bottom-4 left-4 right-4 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md p-4 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-2xl flex items-center justify-between z-20">
+              <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-xl bg-violet-100 dark:bg-violet-900/50 text-violet-600 flex items-center justify-center font-extrabold text-2xl">🎯</div>
+                <div>
+                  <div class="text-[10px] uppercase font-extrabold tracking-wider text-slate-400">Practice Goal</div>
+                  <div class="text-base font-extrabold text-slate-900 dark:text-white flex items-center gap-2">
+                    Perform: <span id="targetWordText" class="text-indigo-600">Namaste</span>
+                    <span id="matchIcon" class="hidden text-emerald-500 font-bold">✓</span>
+                  </div>
+                </div>
+              </div>
+              <div class="flex items-center gap-3 w-48">
+                <div class="w-full">
+                  <div class="flex justify-between text-xs font-bold text-slate-500 mb-1">
+                    <span>Accuracy</span><span id="accuracyScore">0%</span>
+                  </div>
+                  <div class="w-full bg-slate-200 dark:bg-slate-800 h-2 rounded-full overflow-hidden">
+                    <div id="accuracyBar" class="bg-indigo-600 h-full w-0 transition-all"></div>
+                  </div>
+                </div>
+                <button onclick="nextPracticeGoal()" class="text-xs bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 px-3 py-2 rounded-xl font-bold shrink-0">Next ❯</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Live Subtitle Banner -->
+          <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-5 shadow-sm shrink-0 flex items-center justify-between">
+            <div>
+              <div class="text-[10px] font-black text-indigo-600 uppercase tracking-widest mb-1">Live Translation Output</div>
+              <h3 id="subtitleBanner" class="text-xl md:text-2xl font-extrabold text-slate-900 dark:text-white">Waiting for signs...</h3>
+            </div>
+            <button onclick="speakLatest()" class="p-3 bg-indigo-50 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400 rounded-2xl hover:bg-indigo-100 transition-colors font-bold text-sm">🔊 Listen</button>
+          </div>
+        </div>
+
+        <!-- Right Conversation Transcript & Voice Input (4 cols instead of 5) -->
+        <div class="md:col-span-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl shadow-sm flex flex-col min-h-0">
+          <div class="p-5 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center shrink-0">
+            <div>
+              <h2 class="text-base font-extrabold text-slate-900 dark:text-white">Conversation</h2>
+              <p class="text-xs text-slate-400 font-medium">Live bilingual transcript</p>
+            </div>
+            <span class="bg-emerald-50 dark:bg-emerald-950 text-emerald-600 text-xs font-bold px-3 py-1 rounded-full border border-emerald-200 dark:border-emerald-800">Active</span>
+          </div>
+
+          <!-- Chat Transcript Log -->
+          <div id="chatLog" class="flex-1 overflow-y-auto p-5 space-y-4 custom-scrollbar relative">
+            <div id="signVideoContainer" class="hidden mb-4 bg-black rounded-2xl overflow-hidden relative border border-slate-700">
+              <button onclick="closeVideoInChat()" class="absolute top-2 right-2 bg-slate-900/70 text-white rounded-full w-7 h-7 flex items-center justify-center font-bold hover:bg-red-500 z-10">&times;</button>
+              <video id="signVideoPlayer" class="w-full h-44 object-cover" muted playsinline></video>
+            </div>
+            <div id="emptyChatState" class="text-center text-slate-400 mt-16 text-sm font-semibold">
+              <div class="text-3xl mb-2 opacity-50">💬</div>
+              Start signing or use voice input.
+            </div>
+          </div>
+
+          <!-- Bottom Voice Input Bar -->
+          <div class="p-5 border-t border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50 rounded-b-3xl shrink-0">
+            <div class="flex gap-2 mb-3 overflow-x-auto pb-1 custom-scrollbar">
+              <button onclick="simulateVoice('Thank you')" class="shrink-0 px-3 py-1.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-full text-xs font-bold text-slate-600 dark:text-slate-300 hover:border-indigo-400 transition-colors">"Thank you"</button>
+              <button onclick="simulateVoice('How can I help?')" class="shrink-0 px-3 py-1.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-full text-xs font-bold text-slate-600 dark:text-slate-300 hover:border-indigo-400 transition-colors">"How can I help?"</button>
+              <button onclick="simulateVoice('One moment please')" class="shrink-0 px-3 py-1.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-full text-xs font-bold text-slate-600 dark:text-slate-300 hover:border-indigo-400 transition-colors">"One moment please"</button>
+            </div>
+            <button id="micBtn" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3.5 rounded-2xl font-extrabold text-sm flex items-center justify-center gap-2 shadow-lg shadow-indigo-600/30 transition-all active:scale-95">
+              🎙️ Hold to Speak (Voice to Sign)
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+
+    <!-- 3. ABOUT VIEW -->
+    <div id="viewAbout" class="view-section hidden py-24 bg-white dark:bg-slate-900 transition-opacity duration-300 opacity-0">
+      <div class="max-w-7xl mx-auto px-6">
+        <div class="text-center max-w-3xl mx-auto mb-16">
+          <h2 class="text-xs font-black text-indigo-600 uppercase tracking-widest mb-3">OUR MISSION: COMMUNICATION WITHOUT BARRIERS</h2>
+          <h3 class="text-4xl sm:text-5xl font-black tracking-tight mb-6">Empowering Accessible Conversations</h3>
+          <p class="text-slate-600 dark:text-slate-400 font-medium leading-relaxed">
+            We are engineering computer vision and spatial transformers to make every conversation accessible, dignified, and effortless for the Deaf and Hard-of-Hearing community.
+          </p>
+        </div>
+
+        <!-- Metrics Grid -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-20">
+          <div class="bg-slate-50 dark:bg-slate-950 p-6 rounded-3xl border border-slate-200 dark:border-slate-800 text-center">
+            <div class="text-3xl sm:text-4xl font-black text-indigo-600 mb-2">70M+</div>
+            <div class="text-xs font-bold text-slate-500">Deaf & Hard-of-Hearing individuals globally</div>
+          </div>
+          <div class="bg-slate-50 dark:bg-slate-950 p-6 rounded-3xl border border-slate-200 dark:border-slate-800 text-center">
+            <div class="text-3xl sm:text-4xl font-black text-indigo-600 mb-2">&lt;1:3,000</div>
+            <div class="text-xs font-bold text-slate-500">Certified clinical ISL sign interpreters</div>
+          </div>
+          <div class="bg-slate-50 dark:bg-slate-950 p-6 rounded-3xl border border-slate-200 dark:border-slate-800 text-center">
+            <div class="text-3xl sm:text-4xl font-black text-indigo-600 mb-2">98.4%</div>
+            <div class="text-xs font-bold text-slate-500">Real-time LSTM model inference accuracy</div>
+          </div>
+          <div class="bg-slate-50 dark:bg-slate-950 p-6 rounded-3xl border border-slate-200 dark:border-slate-800 text-center">
+            <div class="text-3xl sm:text-4xl font-black text-indigo-600 mb-2">14ms</div>
+            <div class="text-xs font-bold text-slate-500">End-to-end tensor pipeline frame latency</div>
+          </div>
+        </div>
+
+        <!-- Leadership & Advisory Board -->
+        <div class="mb-20">
+          <h3 class="text-2xl font-extrabold mb-8 text-center">Leadership & Community Advisory Board</h3>
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div class="bg-slate-50 dark:bg-slate-950 p-6 rounded-3xl border border-slate-200 dark:border-slate-800">
+              <div class="w-16 h-16 rounded-full bg-indigo-100 mb-4 flex items-center justify-center font-bold text-xl text-indigo-600">AK</div>
+              <h5 class="font-extrabold text-lg mb-1">Dr. Ananya Sen</h5>
+              <p class="text-xs font-bold text-indigo-600 mb-3">Director of AI Accessibility</p>
+              <p class="text-xs text-slate-500 leading-relaxed">Ex-MIT Media Lab researcher specializing in computer vision for sign language recognition.</p>
+            </div>
+            <div class="bg-slate-50 dark:bg-slate-950 p-6 rounded-3xl border border-slate-200 dark:border-slate-800">
+              <div class="w-16 h-16 rounded-full bg-purple-100 mb-4 flex items-center justify-center font-bold text-xl text-purple-600">KC</div>
+              <h5 class="font-extrabold text-lg mb-1">Krishna Chaudhary</h5>
+              <p class="text-xs font-bold text-purple-600 mb-3">Lead AIML Architect</p>
+              <p class="text-xs text-slate-500 leading-relaxed">Student researcher and lead developer behind the real-time ISL translator architecture.</p>
+            </div>
+            <div class="bg-slate-50 dark:bg-slate-950 p-6 rounded-3xl border border-slate-200 dark:border-slate-800">
+              <div class="w-16 h-16 rounded-full bg-emerald-100 mb-4 flex items-center justify-center font-bold text-xl text-emerald-600">PS</div>
+              <h5 class="font-extrabold text-lg mb-1">Priya Sundaramurthy</h5>
+              <p class="text-xs font-bold text-emerald-600 mb-3">Deaf Advocate & Linguist</p>
+              <p class="text-xs text-slate-500 leading-relaxed">Linguistic advisor ensuring spatial grammar accuracy for Indian Sign Language.</p>
+            </div>
+            <div class="bg-slate-50 dark:bg-slate-950 p-6 rounded-3xl border border-slate-200 dark:border-slate-800">
+              <div class="w-16 h-16 rounded-full bg-blue-100 mb-4 flex items-center justify-center font-bold text-xl text-blue-600">DB</div>
+              <h5 class="font-extrabold text-lg mb-1">Dr. Elijah Brooks</h5>
+              <p class="text-xs font-bold text-blue-600 mb-3">Clinical Ethics Lead</p>
+              <p class="text-xs text-slate-500 leading-relaxed">Overseeing GDPR and HIPAA compliance for hospital communication workflows.</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+
+    <!-- 4. HOW IT WORKS VIEW -->
+    <div id="viewHowItWorks" class="view-section hidden py-24 bg-white dark:bg-slate-900 transition-opacity duration-300 opacity-0">
+      <div class="max-w-7xl mx-auto px-6">
+        <div class="text-center max-w-3xl mx-auto mb-16">
+          <h2 class="text-xs font-black text-indigo-600 uppercase tracking-widest mb-3">HOW SIGNSPEAK WORKS: THE TECHNOLOGY OF HUMAN CONNECTION</h2>
+          <h3 class="text-4xl font-black tracking-tight mb-4">Four Stages of Natural Synthesis</h3>
+          <p class="text-slate-600 dark:text-slate-400 font-medium">From computer vision to spatial transformers and neural speech synthesis, translate signs and voice in 14ms.</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-20">
+          <div class="bg-slate-50 dark:bg-slate-950 p-8 rounded-3xl border border-slate-200 dark:border-slate-800 flex flex-col justify-center">
+            <span class="text-xs font-black text-indigo-600 mb-2">STAGE ONE • KINEMATIC TRACKING</span>
+            <h4 class="text-2xl font-extrabold mb-4">Spatial Gesture Perception</h4>
+            <p class="text-slate-600 dark:text-slate-400 text-sm mb-6 leading-relaxed">Standard webcams capture hand movements without intrusive sensory gloves or dedicated infrared setups. Our lightweight kinematic engine extracts 144 discrete coordinate landmarks per palm alongside subtle facial valence dynamics.</p>
+            <div class="grid grid-cols-2 gap-4 text-xs font-bold">
+              <div class="bg-white dark:bg-slate-900 p-3 rounded-xl border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300">✓ Wrist-anchored origin shifting</div>
+              <div class="bg-white dark:bg-slate-900 p-3 rounded-xl border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300">✓ Bounding-box invariant scaling</div>
+            </div>
+          </div>
+
+          <div class="bg-slate-50 dark:bg-slate-950 p-8 rounded-3xl border border-slate-200 dark:border-slate-800 flex flex-col justify-center">
+            <span class="text-xs font-black text-indigo-600 mb-2">STAGE TWO • CONTEXTUAL GRAMMAR</span>
+            <h4 class="text-2xl font-extrabold mb-4">Contextual Grammar & Gloss Mapping</h4>
+            <p class="text-slate-600 dark:text-slate-400 text-sm mb-6 leading-relaxed">Sign language is not a word-for-word mimic of spoken language; it carries its own intricate Topic-Comment syntax, spatial directional verbs, and facial modifiers. Our state-of-the-art Gemini NLP engine reconstructs smooth, idiomatic speech.</p>
+            <div class="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 text-xs font-mono text-indigo-600 dark:text-indigo-400">
+              Keywords: [Namaste, Doctor, Medicine] → "I urgently need to go see a doctor at the hospital."
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+
+    <!-- 5. CONTACT VIEW -->
+    <div id="viewContact" class="view-section hidden py-24 bg-white dark:bg-slate-900 transition-opacity duration-300 opacity-0">
+      <div class="max-w-7xl mx-auto px-6">
+        <div class="text-center max-w-3xl mx-auto mb-16">
+          <h2 class="text-xs font-black text-indigo-600 uppercase tracking-widest mb-3">HUMAN-FIRST NEURAL INTERFACE</h2>
+          <h3 class="text-4xl font-black tracking-tight mb-4">Let's Connect & Collaborate</h3>
+          <p class="text-slate-600 dark:text-slate-400 font-medium">Whether you need SignSpeak for healthcare, education, workplace accessibility, or want to contribute to our open gesture dataset, we'd love to hear from you.</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+          <!-- Left Info Cards -->
+          <div class="lg:col-span-5 space-y-6">
+            <div class="bg-slate-50 dark:bg-slate-950 p-8 rounded-3xl border border-slate-200 dark:border-slate-800">
+              <div class="flex items-center justify-between mb-4">
+                <span class="font-extrabold text-sm">ASL Video Relay Support</span>
+                <span class="bg-emerald-500 text-white text-[10px] font-black px-2.5 py-1 rounded-full animate-pulse">ACTIVE NOW</span>
+              </div>
+              <p class="text-xs text-slate-500 mb-6 leading-relaxed">Connect directly via our secure, high-framerate WebRTC video endpoint with fluent ASL and ISL native communicators.</p>
+              <button onclick="switchView('workspace')" class="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs transition-colors">Start Live Video Session</button>
+            </div>
+
+            <div class="bg-slate-50 dark:bg-slate-950 p-8 rounded-3xl border border-slate-200 dark:border-slate-800 space-y-4 text-xs">
+              <div class="font-bold text-slate-400 uppercase tracking-wider">Inquiry Routing</div>
+              <div>
+                <span class="font-bold text-slate-700 dark:text-slate-300">Support Inquiries:</span> <a href="mailto:support@signspeak.ai" class="text-indigo-600 hover:underline">support@signspeak.ai</a>
+                <div class="text-slate-400 mt-1">Response under 2 hours</div>
+              </div>
+              <div>
+                <span class="font-bold text-slate-700 dark:text-slate-300">Research & Datasets:</span> <a href="mailto:community@signspeak.ai" class="text-indigo-600 hover:underline">community@signspeak.ai</a>
+                <div class="text-slate-400 mt-1">Open gesture consortium</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Collaboration Form -->
+          <div class="lg:col-span-7 bg-slate-50 dark:bg-slate-950 p-8 sm:p-10 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm">
+            <h4 class="text-2xl font-extrabold mb-6">Initiate Collaboration</h4>
+            <form onsubmit="event.preventDefault(); alert('Message successfully transmitted to SignSpeak engineering team!');" class="space-y-6">
+              <div>
+                <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Area of Focus *</label>
+                <div class="grid grid-cols-2 gap-3 text-xs font-bold">
+                  <label class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-3 rounded-xl flex items-center gap-2 cursor-pointer hover:border-indigo-600 transition-colors">
+                    <input type="radio" name="focus" checked class="text-indigo-600"> Clinical Pilot (Hospital/School)
+                  </label>
+                  <label class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-3 rounded-xl flex items-center gap-2 cursor-pointer hover:border-indigo-600 transition-colors">
+                    <input type="radio" name="focus" class="text-indigo-600"> Technical & API Integration
+                  </label>
+                </div>
+              </div>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div>
+                  <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Full Name *</label>
+                  <input type="text" required placeholder="Dr. Maya Chen" class="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-600 transition-colors">
+                </div>
+                <div>
+                  <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Email Address *</label>
+                  <input type="email" required placeholder="maya.chen@hospital.org" class="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-600 transition-colors">
+                </div>
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-500 uppercase mb-2">How can our engineering team assist you? *</label>
+                <textarea rows="4" required placeholder="Outline your clinical context, classroom environment, or dataset collection scope..." class="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-600 transition-colors"></textarea>
+              </div>
+              <button type="submit" class="w-full py-4 bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold rounded-2xl shadow-xl shadow-indigo-600/30 transition-all active:scale-95">Send Message →</button>
+            </form>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </main>
+
 
   <!-- ================= DICTIONARY MODAL ================= -->
-  <div id="dictModal" class="hidden fixed inset-0 z-50 bg-slate-900/40 dark:bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 opacity-0 transition-opacity duration-300">
-    <div class="bg-white dark:bg-slate-900 rounded-3xl shadow-2xl max-w-md w-full p-8 transform scale-95 transition-transform duration-300 border border-slate-100 dark:border-slate-800">
+  <div id="dictModal" class="hidden fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-slate-900 rounded-3xl shadow-2xl max-w-md w-full p-8 border border-slate-200 dark:border-slate-800">
       <div class="flex justify-between items-center mb-6">
-        <h3 class="text-2xl font-bold text-slate-800 dark:text-white">Supported Signs</h3>
-        <button id="closeDictBtn" class="text-slate-400 hover:text-red-500 text-3xl font-bold transition-colors">&times;</button>
+        <h3 class="text-2xl font-bold">Supported Signs</h3>
+        <button onclick="closeDictionaryModal()" class="text-slate-400 hover:text-red-500 text-3xl font-bold transition-colors">&times;</button>
       </div>
-      
-      <!-- UPDATED GRID WITH VIDEO TRIGGER BUTTONS -->
-      <div class="grid grid-cols-2 gap-4 text-slate-600 dark:text-slate-300 font-medium">
-        <button onclick="playSignVideo('Namaste.mp4')" class="bg-slate-50 dark:bg-slate-800 hover:bg-blue-50 dark:hover:bg-blue-900/30 p-3 rounded-xl border border-slate-200 dark:border-slate-700 text-center shadow-sm transition-colors">🙏 Namaste</button>
-        <button onclick="playSignVideo('Help.mp4')" class="bg-slate-50 dark:bg-slate-800 hover:bg-blue-50 dark:hover:bg-blue-900/30 p-3 rounded-xl border border-slate-200 dark:border-slate-700 text-center shadow-sm transition-colors">🤝 Help</button>
-        <button onclick="playSignVideo('Doctor.mp4')" class="bg-slate-50 dark:bg-slate-800 hover:bg-blue-50 dark:hover:bg-blue-900/30 p-3 rounded-xl border border-slate-200 dark:border-slate-700 text-center shadow-sm transition-colors">🩺 Doctor</button>
-        <button onclick="playSignVideo('Medicine.mp4')" class="bg-slate-50 dark:bg-slate-800 hover:bg-blue-50 dark:hover:bg-blue-900/30 p-3 rounded-xl border border-slate-200 dark:border-slate-700 text-center shadow-sm transition-colors">💊 Medicine</button>
-        <button onclick="playSignVideo('Water.mp4')" class="bg-slate-50 dark:bg-slate-800 hover:bg-blue-50 dark:hover:bg-blue-900/30 p-3 rounded-xl border border-slate-200 dark:border-slate-700 text-center shadow-sm transition-colors">💧 Water</button>
-        <button onclick="playSignVideo('Hello.mp4')" class="bg-slate-50 dark:bg-slate-800 hover:bg-blue-50 dark:hover:bg-blue-900/30 p-3 rounded-xl border border-slate-200 dark:border-slate-700 text-center shadow-sm transition-colors">👋 Hello</button>
-        <button onclick="playSignVideo('MyNameIs.mp4')" class="bg-slate-50 dark:bg-slate-800 hover:bg-blue-50 dark:hover:bg-blue-900/30 p-3 rounded-xl border border-slate-200 dark:border-slate-700 text-center shadow-sm transition-colors">👤 My Name Is</button>
-        <button onclick="playSignVideo('Krishna.mp4')" class="bg-slate-50 dark:bg-slate-800 hover:bg-blue-50 dark:hover:bg-blue-900/30 p-3 rounded-xl border border-slate-200 dark:border-slate-700 text-center shadow-sm transition-colors">🧑 Krishna</button>
-        <button onclick="playSignVideo('Sorry.mp4')" class="bg-slate-50 dark:bg-slate-800 hover:bg-blue-50 dark:hover:bg-blue-900/30 p-3 rounded-xl border border-slate-200 dark:border-slate-700 text-center shadow-sm transition-colors col-span-2">😔 Sorry</button>
+      <div class="grid grid-cols-2 gap-4 font-medium text-sm">
+        <button onclick="playSignVideoInChat('Namaste.mp4')" class="bg-slate-50 dark:bg-slate-800 hover:bg-indigo-50 dark:hover:bg-indigo-900/40 p-3 rounded-xl border border-slate-200 dark:border-slate-700 text-center transition-colors">🙏 Namaste</button>
+        <button onclick="playSignVideoInChat('Help.mp4')" class="bg-slate-50 dark:bg-slate-800 hover:bg-indigo-50 dark:hover:bg-indigo-900/40 p-3 rounded-xl border border-slate-200 dark:border-slate-700 text-center transition-colors">🤝 Help</button>
+        <button onclick="playSignVideoInChat('Doctor.mp4')" class="bg-slate-50 dark:bg-slate-800 hover:bg-indigo-50 dark:hover:bg-indigo-900/40 p-3 rounded-xl border border-slate-200 dark:border-slate-700 text-center transition-colors">🩺 Doctor</button>
+        <button onclick="playSignVideoInChat('Medicine.mp4')" class="bg-slate-50 dark:bg-slate-800 hover:bg-indigo-50 dark:hover:bg-indigo-900/40 p-3 rounded-xl border border-slate-200 dark:border-slate-700 text-center transition-colors">💊 Medicine</button>
+        <button onclick="playSignVideoInChat('Water.mp4')" class="bg-slate-50 dark:bg-slate-800 hover:bg-indigo-50 dark:hover:bg-indigo-900/40 p-3 rounded-xl border border-slate-200 dark:border-slate-700 text-center transition-colors">💧 Water</button>
+        <button onclick="playSignVideoInChat('Hello.mp4')" class="bg-slate-50 dark:bg-slate-800 hover:bg-indigo-50 dark:hover:bg-indigo-900/40 p-3 rounded-xl border border-slate-200 dark:border-slate-700 text-center transition-colors">👋 Hello</button>
       </div>
     </div>
   </div>
 
-  <!-- ================= NEW VIDEO PLAYER MODAL ================= -->
-  <div id="video-modal" class="hidden fixed inset-0 z-[60] bg-slate-900/60 dark:bg-slate-950/90 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="bg-white dark:bg-slate-900 p-2 rounded-2xl shadow-2xl relative w-full max-w-lg border border-slate-200 dark:border-slate-800">
-        <button onclick="closeVideo()" class="absolute -top-4 -right-4 bg-red-500 hover:bg-red-600 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold shadow-lg transition-transform hover:scale-110">&times;</button>
-        <video id="sign-video-player" controls autoplay class="w-full rounded-xl bg-black">
-            <source src="" type="video/mp4">
-        </video>
-    </div>
-  </div>
 
+  <!-- ================= GLOBAL JAVASCRIPT ENGINE ================= -->
   <script>
-    // --- MULTI-BUTTON THEME TOGGLE LOGIC ---
+    // Theme Switcher
     const htmlEl = document.documentElement;
-    
     function applyTheme(isDark) {
       if (isDark) {
         htmlEl.classList.add('dark');
@@ -234,364 +543,286 @@
         document.querySelectorAll('.moonIcon').forEach(el => el.classList.remove('hidden'));
       }
     }
-
     if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
       applyTheme(true);
     } else {
       applyTheme(false);
     }
-
-    function toggleTheme() {
+    document.getElementById('themeToggle').addEventListener('click', () => {
       const isDark = htmlEl.classList.toggle('dark');
       localStorage.theme = isDark ? 'dark' : 'light';
       applyTheme(isDark);
-    }
+    });
 
-    document.getElementById('themeToggle').addEventListener('click', toggleTheme);
-    document.getElementById('appThemeToggle').addEventListener('click', toggleTheme);
-
-    // --- UI NAVIGATION & MODALS ---
-    const topNav = document.getElementById("topNav");
-    const landingPage = document.getElementById("landingPage");
-    const appInterface = document.getElementById("appInterface");
-    const enterAppBtn = document.getElementById("enterAppBtn");
-    const backToHomeBtn = document.getElementById("backToHomeBtn");
-    
-    const dictBtn = document.getElementById("dictBtn");
-    const dictModal = document.getElementById("dictModal");
-    const closeDictBtn = document.getElementById("closeDictBtn");
-    const modalContent = dictModal.querySelector("div");
-    const exportBtn = document.getElementById("exportBtn");
-
-    const modeTranslateBtn = document.getElementById("modeTranslateBtn");
-    const modePracticeBtn = document.getElementById("modePracticeBtn");
-    const practiceCard = document.getElementById("practiceCard");
-
-    enterAppBtn.addEventListener("click", () => {
-      landingPage.classList.add("opacity-0");
-      topNav.classList.add("opacity-0", "pointer-events-none"); 
+    // SMOOTH SPA View Router
+    let activeView = 'home';
+    function switchView(viewName) {
+      if (viewName === activeView) return;
+      
+      const currentSection = document.getElementById('view' + activeView.charAt(0).toUpperCase() + activeView.slice(1));
+      const nextSection = document.getElementById('view' + viewName.charAt(0).toUpperCase() + viewName.slice(1));
+      
+      // Step 1: Fade out current view
+      currentSection.classList.remove('opacity-100');
+      currentSection.classList.add('opacity-0');
+      
+      // Step 2: Wait for transition, swap display states, and fade in new view
       setTimeout(() => {
-        landingPage.classList.add("hidden");
-        appInterface.classList.remove("hidden");
-        setTimeout(() => appInterface.classList.remove("opacity-0"), 50);
-      }, 500);
-    });
-
-    backToHomeBtn.addEventListener("click", () => {
-      if (isTranslating) stopBtn.click();
-      appInterface.classList.add("opacity-0");
-      setTimeout(() => {
-        appInterface.classList.add("hidden");
-        landingPage.classList.remove("hidden");
-        topNav.classList.remove("opacity-0", "pointer-events-none"); 
-        setTimeout(() => landingPage.classList.remove("opacity-0"), 50);
-      }, 500);
-    });
-
-    dictBtn.addEventListener("click", () => {
-      dictModal.classList.remove("hidden");
-      setTimeout(() => {
-        dictModal.classList.remove("opacity-0");
-        modalContent.classList.replace("scale-95", "scale-100");
-      }, 10);
-    });
-
-    closeDictBtn.addEventListener("click", () => {
-      dictModal.classList.add("opacity-0");
-      modalContent.classList.replace("scale-100", "scale-95");
-      setTimeout(() => dictModal.classList.add("hidden"), 300);
-    });
-
-    // --- VIDEO MODAL LOGIC ---
-    function playSignVideo(filename) {
-        const videoModal = document.getElementById('video-modal');
-        const videoPlayer = document.getElementById('sign-video-player');
+        // Manage display classes
+        if(activeView === 'workspace') currentSection.classList.remove('flex');
+        currentSection.classList.add('hidden');
         
-        videoPlayer.src = `/videos/${filename}`; 
-        videoModal.classList.remove('hidden');
-    }
-
-    function closeVideo() {
-        const videoModal = document.getElementById('video-modal');
-        const videoPlayer = document.getElementById('sign-video-player');
+        if(viewName === 'workspace') nextSection.classList.add('flex');
+        nextSection.classList.remove('hidden');
         
-        videoPlayer.pause();
-        videoPlayer.src = ""; 
-        videoModal.classList.add('hidden');
+        // Slight delay to allow DOM to render before triggering opacity transition
+        setTimeout(() => {
+          nextSection.classList.remove('opacity-0');
+          nextSection.classList.add('opacity-100');
+          activeView = viewName;
+          
+          // Only force scroll to top if not entering workspace (so workspace layout doesn't jitter)
+          if(viewName !== 'workspace') {
+             window.scrollTo({ top: 0, behavior: 'smooth' });
+          }
+        }, 50);
+      }, 300); // 300ms matches Tailwind's duration-300 class
     }
 
-    exportBtn.addEventListener("click", () => {
-      const logEntries = document.querySelectorAll("#chatLog div");
-      if (logEntries.length === 0) return alert("No translations to export yet!");
-      let transcript = "SignSpeak AI - Translation Transcript\n\n";
-      logEntries.forEach(entry => transcript += entry.innerText + "\n");
-      const blob = new Blob([transcript], { type: "text/plain" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `SignSpeak_Transcript_${new Date().getTime()}.txt`;
-      a.click();
-      URL.revokeObjectURL(url);
-    });
+    // Dictionary Modal Controls
+    const dictModal = document.getElementById('dictModal');
+    function openDictionaryModal() { dictModal.classList.remove('hidden'); }
+    function closeDictionaryModal() { dictModal.classList.add('hidden'); }
 
-    // Mode Toggle
-    modeTranslateBtn.addEventListener("click", () => {
-      modeTranslateBtn.classList.add("bg-white", "dark:bg-slate-700", "shadow-sm", "text-blue-600", "dark:text-blue-400");
-      modeTranslateBtn.classList.remove("text-slate-500", "dark:text-slate-400");
-      modePracticeBtn.classList.remove("bg-white", "dark:bg-slate-700", "shadow-sm", "text-blue-600", "dark:text-blue-400");
-      modePracticeBtn.classList.add("text-slate-500", "dark:text-slate-400");
-      practiceCard.classList.add("hidden");
-    });
+    // Workspace Mode Controller (Translate vs Practice)
+    let isPracticeMode = false;
+    function setWorkspaceMode(mode) {
+      const translateBtn = document.getElementById('modeTranslateBtn');
+      const practiceBtn = document.getElementById('modePracticeBtn');
+      const practiceCard = document.getElementById('practiceCard');
+      
+      if (mode === 'practice') {
+        isPracticeMode = true;
+        practiceBtn.className = "px-3 py-1.5 rounded-lg bg-white dark:bg-slate-700 shadow-sm text-indigo-600 dark:text-indigo-400 transition-colors";
+        translateBtn.className = "px-3 py-1.5 rounded-lg text-slate-500 hover:text-slate-800 dark:hover:text-white transition-colors";
+        practiceCard.classList.remove('hidden');
+        initPracticeGoal();
+      } else {
+        isPracticeMode = false;
+        translateBtn.className = "px-3 py-1.5 rounded-lg bg-white dark:bg-slate-700 shadow-sm text-indigo-600 dark:text-indigo-400 transition-colors";
+        practiceBtn.className = "px-3 py-1.5 rounded-lg text-slate-500 hover:text-slate-800 dark:hover:text-white transition-colors";
+        practiceCard.classList.add('hidden');
+      }
+    }
 
-    modePracticeBtn.addEventListener("click", () => {
-      modePracticeBtn.classList.add("bg-white", "dark:bg-slate-700", "shadow-sm", "text-blue-600", "dark:text-blue-400");
-      modePracticeBtn.classList.remove("text-slate-500", "dark:text-slate-400");
-      modeTranslateBtn.classList.remove("bg-white", "dark:bg-slate-700", "shadow-sm", "text-blue-600", "dark:text-blue-400");
-      modeTranslateBtn.classList.add("text-slate-500", "dark:text-slate-400");
-      practiceCard.classList.remove("hidden");
-    });
-
-    // --- PRACTICE MODE (UPDATED VOCABULARY) ---
-    const practiceVocabulary = ["Namaste", "Help", "Doctor", "Medicine", "Water", "Hello", "My Name Is", "Krishna", "Sorry"];
+    // Practice Vocabulary Target System
+    const practiceVocabulary = ["Namaste", "Help", "Doctor", "Medicine", "Water", "Hello"];
     let practiceIdx = 0;
-    let targetHoldCounter = 0;
-    const targetWordText = document.getElementById("targetWordText");
-    const accuracyScore = document.getElementById("accuracyScore");
-    const accuracyBar = document.getElementById("accuracyBar");
-    const skipSignBtn = document.getElementById("skipSignBtn");
-    const matchIcon = document.getElementById("matchIcon");
-
-    function setPracticeGoal(index) {
-      practiceIdx = index % practiceVocabulary.length;
-      targetWordText.textContent = practiceVocabulary[practiceIdx];
-      targetWordText.className = "text-blue-600 dark:text-blue-400";
-      matchIcon.classList.add("hidden");
-      accuracyScore.textContent = "0%";
-      accuracyBar.style.width = "0%";
-      accuracyBar.className = "bg-blue-600 h-full transition-all duration-150 rounded-full";
-      targetHoldCounter = 0;
+    let holdCount = 0;
+    function initPracticeGoal() {
+      practiceIdx = 0;
+      document.getElementById('targetWordText').textContent = practiceVocabulary[practiceIdx];
+      document.getElementById('targetWordText').className = "text-indigo-600";
+      document.getElementById('matchIcon').classList.add('hidden');
+      document.getElementById('accuracyScore').textContent = "0%";
+      document.getElementById('accuracyBar').style.width = "0%";
+      document.getElementById('accuracyBar').className = "bg-indigo-600 h-full w-0 transition-all";
+      holdCount = 0;
+    }
+    function nextPracticeGoal() {
+      practiceIdx = (practiceIdx + 1) % practiceVocabulary.length;
+      document.getElementById('targetWordText').textContent = practiceVocabulary[practiceIdx];
+      document.getElementById('targetWordText').className = "text-indigo-600";
+      document.getElementById('matchIcon').classList.add('hidden');
+      document.getElementById('accuracyScore').textContent = "0%";
+      document.getElementById('accuracyBar').style.width = "0%";
+      document.getElementById('accuracyBar').className = "bg-indigo-600 h-full w-0 transition-all";
+      holdCount = 0;
     }
 
-    skipSignBtn.addEventListener("click", () => setPracticeGoal(practiceIdx + 1));
-
-    // --- CAMERA & WEBSOCKET ENGINE ---
-    const videoEl = document.getElementById("webcam");
-    const canvasEl = document.getElementById("captureCanvas");
-    const subtitleBanner = document.getElementById("subtitleBanner");
-    const chatLog = document.getElementById("chatLog");
-    const startBtn = document.getElementById("startBtn");
-    const stopBtn = document.getElementById("stopBtn");
-
-    const canvasCtx = canvasEl.getContext("2d");
-    let ws = null;
-    let isTranslating = false; 
+    // Chat Log & Voice Transcript Builder
+    const chatLog = document.getElementById('chatLog');
+    const emptyChatState = document.getElementById('emptyChatState');
+    let latestSpokenText = "";
 
     function appendLog(text, type) {
-      const row = document.createElement("div");
-      if (type === "word") {
-        row.className = "bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-2 text-xs md:text-sm text-slate-600 dark:text-slate-300 font-bold w-max max-w-full shadow-sm";
-        row.textContent = text;
-      } else if (type === "sentence") {
-        row.className = "bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-500 rounded-r-xl px-4 py-3 text-sm md:text-base text-blue-800 dark:text-blue-200 font-extrabold my-2 shadow-md w-full";
-        row.textContent = text;
+      if (emptyChatState) emptyChatState.style.display = 'none';
+      const row = document.createElement('div');
+      row.className = "flex flex-col w-full mb-3 animate-fade-in";
+      
+      const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+      if (type === 'sign' || type === 'word' || type === 'sentence') {
+        latestSpokenText = text;
+        row.innerHTML = `
+          <span class="text-[10px] font-extrabold text-slate-400 mb-1 ml-1">Signer</span>
+          <div class="bg-indigo-600 text-white rounded-2xl rounded-tl-sm px-4 py-3 shadow-sm self-start max-w-[85%]">
+            <p class="text-sm font-medium">"${text}"</p>
+          </div>
+          <span class="text-[10px] text-slate-400 mt-1 ml-1">${timeStr}</span>
+        `;
+      } else {
+        row.innerHTML = `
+          <span class="text-[10px] font-extrabold text-slate-400 mb-1 mr-1 self-end">You (Voice)</span>
+          <div class="bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 rounded-2xl rounded-tr-sm px-4 py-3 shadow-sm self-end max-w-[85%] border border-slate-200 dark:border-slate-700">
+            <p class="text-sm font-medium">"${text}"</p>
+          </div>
+          <span class="text-[10px] text-slate-400 mt-1 mr-1 self-end">${timeStr}</span>
+        `;
       }
       chatLog.appendChild(row);
       chatLog.scrollTop = chatLog.scrollHeight;
     }
 
-    function speakWord(word) {
-      if (!("speechSynthesis" in window)) return;
+    function speakLatest() {
+      if (!latestSpokenText || !("speechSynthesis" in window)) return;
       window.speechSynthesis.cancel();
-      const utterance = new SpeechSynthesisUtterance(word);
-      window.speechSynthesis.speak(utterance);
+      window.speechSynthesis.speak(new SpeechSynthesisUtterance(latestSpokenText));
     }
+
+    function simulateVoice(phrase) {
+      appendLog(phrase, 'speech');
+      const voiceMap = { "thank you": "Namaste", "how can i help?": "Help", "one moment please": "Water" };
+      const matched = voiceMap[phrase.toLowerCase()];
+      if (matched) playSignVideoInChat(matched + ".mp4");
+    }
+
+    // Video Player inside Chat
+    function playSignVideoInChat(filename) {
+      dictModal.classList.add('hidden');
+      const container = document.getElementById('signVideoContainer');
+      const player = document.getElementById('signVideoPlayer');
+      container.classList.remove('hidden');
+      player.src = `/videos/${filename}`;
+      player.play();
+      chatLog.scrollTop = 0;
+    }
+    function closeVideoInChat() {
+      const player = document.getElementById('signVideoPlayer');
+      player.pause();
+      player.src = "";
+      document.getElementById('signVideoContainer').classList.add('hidden');
+    }
+
+    // Camera & WebSocket Engine Integration
+    const videoEl = document.getElementById('webcam');
+    const canvasEl = document.getElementById('captureCanvas');
+    const canvasCtx = canvasEl.getContext('2d');
+    let ws = null;
+    let isTranslating = false;
 
     function sendFrame() {
       if (!isTranslating || !ws || ws.readyState !== WebSocket.OPEN) return;
       if (videoEl.readyState < 2) return;
-      const width = videoEl.videoWidth;
-      const height = videoEl.videoHeight;
-      if (!width || !height) return;
-
-      if (canvasEl.width !== width || canvasEl.height !== height) {
-        canvasEl.width = width; canvasEl.height = height;
+      const w = videoEl.videoWidth;
+      const h = videoEl.videoHeight;
+      if (!w || !h) return;
+      if (canvasEl.width !== w || canvasEl.height !== h) {
+        canvasEl.width = w; canvasEl.height = h;
       }
-      canvasCtx.drawImage(videoEl, 0, 0, width, height);
-      ws.send(canvasEl.toDataURL("image/jpeg", 0.7));
+      canvasCtx.drawImage(videoEl, 0, 0, w, h);
+      ws.send(canvasEl.toDataURL('image/jpeg', 0.7));
     }
 
     function connectWebSocket() {
-      const protocol = window.location.protocol === "https:" ? "wss" : "ws";
+      const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
       ws = new WebSocket(`${protocol}://${window.location.host}/ws`);
       ws.onopen = () => sendFrame();
       ws.onmessage = (event) => {
-        if (!isTranslating) return; 
+        if (!isTranslating) return;
         try {
           const data = JSON.parse(event.data);
-          if (data.type === "telemetry") {
-            const targetWord = practiceVocabulary[practiceIdx];
-            if (data.predicted_word === targetWord) {
+          
+          if (isPracticeMode && data.type === 'telemetry') {
+            const target = practiceVocabulary[practiceIdx];
+            if (data.predicted_word === target) {
               const conf = data.confidence || 0;
-              accuracyScore.textContent = `${conf}%`;
-              accuracyBar.style.width = `${conf}%`;
-
+              document.getElementById('accuracyScore').textContent = `${conf}%`;
+              document.getElementById('accuracyBar').style.width = `${conf}%`;
               if (conf >= 80) {
-                targetHoldCounter++;
-                accuracyBar.className = "bg-emerald-500 h-full transition-all duration-150 rounded-full";
-                
-                if (targetHoldCounter >= 3) {
-                  matchIcon.classList.remove("hidden");
-                  targetWordText.className = "text-emerald-600 dark:text-emerald-400";
-                  setTimeout(() => setPracticeGoal(practiceIdx + 1), 1100);
+                holdCount++;
+                if (holdCount >= 3) {
+                  document.getElementById('matchIcon').classList.remove('hidden');
+                  document.getElementById('targetWordText').className = "text-emerald-500 font-black";
+                  document.getElementById('accuracyBar').className = "bg-emerald-500 h-full w-full transition-all";
+                  setTimeout(() => nextPracticeGoal(), 1200);
                 }
               }
-            } else {
-              accuracyScore.textContent = "0%";
-              accuracyBar.style.width = "0%";
-              targetHoldCounter = 0;
             }
           }
 
-          if (data.type === "word") {
-            subtitleBanner.textContent = data.text;
-            appendLog(`Sign: ${data.text}`, "word");
-            speakWord(data.text);
-          } else if (data.type === "sentence") {
-            subtitleBanner.textContent = data.text;
-            appendLog(`${data.text}`, "sentence");
-            speakWord(data.text);
+          if (data.type === 'word' || data.type === 'sentence') {
+            document.getElementById('subtitleBanner').textContent = `"${data.text}"`;
+            appendLog(data.text, data.type);
+            speakLatest();
           }
-        } catch (err) { }
-        sendFrame(); 
+        } catch (err) {}
+        sendFrame();
       };
       ws.onclose = () => { if (isTranslating) setTimeout(connectWebSocket, 1200); };
     }
 
-    async function startCamera() {
+    document.getElementById('startBtn').addEventListener('click', async () => {
+      isTranslating = true;
+      document.getElementById('startBtn').classList.add('hidden');
+      document.getElementById('stopBtn').classList.remove('hidden');
+      document.getElementById('camStatusDot').className = "w-2 h-2 rounded-full bg-emerald-500 animate-pulse";
+      document.getElementById('camStatusText').textContent = "Active & Translating";
+      document.getElementById('cameraOffline').classList.add('hidden');
+      videoEl.classList.remove('hidden');
+      document.getElementById('subtitleBanner').textContent = "Watching for signs...";
+
       try {
         const stream = await navigator.mediaDevices.getUserMedia({ video: { width: 640, height: 480 }, audio: false });
         videoEl.srcObject = stream;
-        await new Promise(resolve => videoEl.onloadedmetadata = () => resolve());
-        subtitleBanner.textContent = "Waiting for signs...";
+        await new Promise(r => videoEl.onloadedmetadata = () => r());
+        connectWebSocket();
       } catch (err) {
-        subtitleBanner.textContent = "Camera access denied.";
-        isTranslating = false; 
+        document.getElementById('subtitleBanner').textContent = "Camera access denied.";
+        isTranslating = false;
       }
-    }
+    });
 
-    function stopCameraAndSocket() {
+    document.getElementById('stopBtn').addEventListener('click', () => {
       isTranslating = false;
       if (ws) { ws.close(); ws = null; }
       if (videoEl.srcObject) {
-        videoEl.srcObject.getTracks().forEach(track => track.stop());
+        videoEl.srcObject.getTracks().forEach(t => t.stop());
         videoEl.srcObject = null;
       }
-      subtitleBanner.textContent = "Camera offline. Click 'Start Camera & Translation'";
-    }
-
-    startBtn.addEventListener('click', async () => {
-      isTranslating = true;
-      startBtn.innerText = "Translating...";
-      startBtn.classList.replace("bg-blue-600", "bg-emerald-500");
-      startBtn.classList.replace("shadow-blue-500/30", "shadow-emerald-500/30");
-      startBtn.classList.remove("hover:bg-blue-700");
-      startBtn.disabled = true;
-      
-      stopBtn.disabled = false;
-      stopBtn.classList.replace("bg-white", "bg-red-500");
-      stopBtn.classList.replace("dark:bg-slate-800", "dark:bg-red-600");
-      stopBtn.classList.replace("text-slate-400", "text-white");
-      stopBtn.classList.replace("border-slate-200", "border-red-500");
-      stopBtn.classList.replace("dark:border-slate-700", "dark:border-red-600");
-      stopBtn.classList.add("hover:bg-red-600", "shadow-red-500/30");
-      
-      subtitleBanner.textContent = "Connecting camera...";
-      await startCamera();
-      if (isTranslating) connectWebSocket();
+      document.getElementById('stopBtn').classList.add('hidden');
+      document.getElementById('startBtn').classList.remove('hidden');
+      document.getElementById('camStatusDot').className = "w-2 h-2 rounded-full bg-slate-400";
+      document.getElementById('camStatusText').textContent = "Camera Offline";
+      videoEl.classList.add('hidden');
+      document.getElementById('cameraOffline').classList.remove('hidden');
+      document.getElementById('subtitleBanner').textContent = "System standby";
     });
 
-    stopBtn.addEventListener('click', () => {
-      stopCameraAndSocket();
-      
-      startBtn.disabled = false;
-      startBtn.innerText = "Start Camera & Translation";
-      startBtn.classList.replace("bg-emerald-500", "bg-blue-600");
-      startBtn.classList.replace("shadow-emerald-500/30", "shadow-blue-500/30");
-      startBtn.classList.add("hover:bg-blue-700");
-      
-      stopBtn.disabled = true;
-      stopBtn.classList.replace("bg-red-500", "bg-white");
-      stopBtn.classList.replace("dark:bg-red-600", "dark:bg-slate-800");
-      stopBtn.classList.replace("text-white", "text-slate-400");
-      stopBtn.classList.replace("border-red-500", "border-slate-200");
-      stopBtn.classList.replace("dark:border-red-600", "dark:border-slate-700");
-      stopBtn.classList.remove("hover:bg-red-600", "shadow-red-500/30");
-    });
-
-    // --- VOICE TO ISL (WEB SPEECH API - UPDATED) ---
-    const micBtn = document.getElementById("micBtn");
-    const signVideoPlayer = document.getElementById("signVideoPlayer");
-    const signVideoPlaceholder = document.getElementById("signVideoPlaceholder");
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-
-    if (SpeechRecognition) {
-      const recognition = new SpeechRecognition();
+    // Web Speech API for Voice-to-Sign
+    if (window.SpeechRecognition || window.webkitSpeechRecognition) {
+      const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
       recognition.continuous = false;
-      recognition.lang = "en-US";
-
-      // Updated dictionary
-      const voiceMap = {
-        "namaste": "Namaste", 
-        "help": "Help", 
-        "doctor": "Doctor", 
-        "medicine": "Medicine", 
-        "water": "Water", 
-        "hello": "Hello", 
-        "my name is": "MyNameIs", 
-        "krishna": "Krishna", 
-        "sorry": "Sorry"
-      };
+      recognition.lang = 'en-US';
+      const micBtn = document.getElementById('micBtn');
 
       recognition.onstart = () => {
-        micBtn.classList.replace("bg-slate-100", "bg-red-500");
-        micBtn.classList.replace("dark:bg-slate-800", "dark:bg-red-600");
-        micBtn.classList.replace("text-slate-500", "text-white");
-        micBtn.classList.replace("dark:text-slate-400", "dark:text-white");
-        
-        signVideoPlaceholder.innerHTML = `<div class="text-4xl mb-2 opacity-80 animate-pulse">🎙️</div><span class="text-violet-600 dark:text-violet-400 text-xs font-extrabold">Listening...</span>`;
-        signVideoPlayer.classList.add("hidden");
-        signVideoPlaceholder.classList.remove("hidden");
+        micBtn.innerHTML = `<span class="animate-pulse">Listening to voice...</span>`;
+        micBtn.className = "w-full bg-red-600 text-white py-3.5 rounded-2xl font-extrabold text-sm flex items-center justify-center gap-2 shadow-lg transition-all";
       };
-
-      recognition.onresult = (event) => {
-        const transcript = event.results[0][0].transcript.toLowerCase().replace(/[.,!?]/g, "");
-        appendLog(`🎤 Heard: "${transcript}"`, "word"); 
-        
-        let foundVideo = null;
+      recognition.onresult = (e) => {
+        const transcript = e.results[0][0].transcript.toLowerCase();
+        appendLog(transcript, 'speech');
+        const voiceMap = { "namaste": "Namaste", "help": "Help", "doctor": "Doctor", "medicine": "Medicine", "water": "Water", "hello": "Hello" };
         for (const [phrase, filename] of Object.entries(voiceMap)) {
-          if (transcript.includes(phrase)) { foundVideo = filename; break; }
-        }
-
-        if (foundVideo) {
-          signVideoPlaceholder.classList.add("hidden");
-          signVideoPlayer.classList.remove("hidden");
-          signVideoPlayer.src = `/videos/${foundVideo}.mp4`;
-          signVideoPlayer.play();
-        } else {
-          signVideoPlaceholder.innerHTML = `<div class="text-3xl mb-2 opacity-40">🤷</div><span class="text-slate-500 dark:text-slate-400 text-xs font-bold">No sign found for:<br/>"${transcript}"</span>`;
+          if (transcript.includes(phrase)) { playSignVideoInChat(filename + ".mp4"); break; }
         }
       };
-
       recognition.onend = () => {
-        micBtn.classList.replace("bg-red-500", "bg-slate-100");
-        micBtn.classList.replace("dark:bg-red-600", "dark:bg-slate-800");
-        micBtn.classList.replace("text-white", "text-slate-500");
-        micBtn.classList.replace("dark:text-white", "dark:text-slate-400");
+        micBtn.innerHTML = `🎙️ Hold to Speak (Voice to Sign)`;
+        micBtn.className = "w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3.5 rounded-2xl font-extrabold text-sm flex items-center justify-center gap-2 shadow-lg shadow-indigo-600/30 transition-all active:scale-95";
       };
-      micBtn.addEventListener("click", () => recognition.start());
-    } else {
-      micBtn.style.display = "none";
-      signVideoPlaceholder.innerHTML = `<span class="text-red-500 text-xs font-bold">Speech API not supported.</span>`;
+      micBtn.addEventListener('mousedown', () => recognition.start());
     }
   </script>
 </body>
