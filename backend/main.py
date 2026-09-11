@@ -24,7 +24,7 @@ except ImportError:
     genai = None
 
 GEMINI_MODEL = "gemini-2.5-flash"
-PAUSE_SECONDS = 3.5
+PAUSE_SECONDS = 1.5  
 
 DISPLAY_MAP = {
     "Namaste": "Namaste",
@@ -41,10 +41,9 @@ DISPLAY_MAP = {
 def create_gemini_client():
     api_key = os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY")
     if not api_key:
-        print("[Gemini] API Key missing. Sentences will use local punctuation fallback.")
+        print("[Gemini] API Key missing. Sentences will use local fallback.")
         return None
     if genai is None:
-        print("[Gemini] google-genai package not found. Run `pip install google-genai`.")
         return None
     return genai.Client(api_key=api_key)
 
@@ -61,8 +60,6 @@ app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
 
 if VIDEO_DIR.exists():
     app.mount("/videos", StaticFiles(directory=str(VIDEO_DIR)), name="videos")
-else:
-    print(f"[Warning] Sign_Library not found at {VIDEO_DIR}. Voice-to-ISL videos won't load.")
 
 actions = np.array(["Namaste", "Help", "Doctor", "Medicine", "Water", "Hello", "MyNameIs", "Krishna", "Sorry", "Neutral"])
 threshold = 0.60
@@ -85,29 +82,22 @@ holistic = mp_holistic.Holistic(
 )
 
 def _extract_keypoints(results) -> np.ndarray:
-    # 1. Left Hand: Wrist shift & bounding box scaling
-    lh = np.zeros(21 * 3)
     if results.left_hand_landmarks:
-        wrist = results.left_hand_landmarks.landmark[0]
-        lh_coords = np.array([[res.x - wrist.x, res.y - wrist.y, res.z - wrist.z] 
-                              for res in results.left_hand_landmarks.landmark])
-        max_val = np.max(np.abs(lh_coords))
-        if max_val > 0:
-            lh_coords = lh_coords / max_val
-        lh = lh_coords.flatten()
-        
-    # 2. Right Hand: Wrist shift & bounding box scaling
-    rh = np.zeros(21 * 3)
-    if results.right_hand_landmarks:
-        wrist = results.right_hand_landmarks.landmark[0]
-        rh_coords = np.array([[res.x - wrist.x, res.y - wrist.y, res.z - wrist.z] 
-                              for res in results.right_hand_landmarks.landmark])
-        max_val = np.max(np.abs(rh_coords))
-        if max_val > 0:
-            rh_coords = rh_coords / max_val
-        rh = rh_coords.flatten()
+        raw = np.array([[res.x, res.y, res.z] for res in results.left_hand_landmarks.landmark])
+        shifted = raw - raw[0] 
+        max_val = np.max(np.abs(shifted))
+        lh = (shifted / max_val).flatten() if max_val > 0 else shifted.flatten()
+    else:
+        lh = np.zeros(21 * 3)
 
-    # 3. Pose: Vectors scaled by shoulder width
+    if results.right_hand_landmarks:
+        raw = np.array([[res.x, res.y, res.z] for res in results.right_hand_landmarks.landmark])
+        shifted = raw - raw[0]
+        max_val = np.max(np.abs(shifted))
+        rh = (shifted / max_val).flatten() if max_val > 0 else shifted.flatten()
+    else:
+        rh = np.zeros(21 * 3)
+
     pose_features = np.zeros(18)
     if results.pose_landmarks:
         pose = results.pose_landmarks.landmark
@@ -116,20 +106,10 @@ def _extract_keypoints(results) -> np.ndarray:
         r_sh = np.array([pose[12].x, pose[12].y, pose[12].z])
         l_wr = np.array([pose[15].x, pose[15].y, pose[15].z])
         r_wr = np.array([pose[16].x, pose[16].y, pose[16].z])
-        
-        lw_nose = l_wr - nose
-        lw_lsh = l_wr - l_sh
-        lw_rsh = l_wr - r_sh
-        rw_nose = r_wr - nose
-        rw_lsh = r_wr - l_sh
-        rw_rsh = r_wr - r_sh
-        raw_pose = np.concatenate([lw_nose, lw_lsh, lw_rsh, rw_nose, rw_lsh, rw_rsh])
-        
+
+        raw_pose = np.concatenate([l_wr - nose, l_wr - l_sh, l_wr - r_sh, r_wr - nose, r_wr - l_sh, r_wr - r_sh])
         shoulder_width = np.linalg.norm(l_sh - r_sh)
-        if shoulder_width > 0:
-            pose_features = raw_pose / shoulder_width
-        else:
-            pose_features = raw_pose
+        pose_features = (raw_pose / shoulder_width) if shoulder_width > 0 else raw_pose
 
     return np.concatenate([lh, rh, pose_features])
 
@@ -144,21 +124,41 @@ def _decode_base64_frame(payload: str) -> np.ndarray | None:
     except Exception:
         return None
 
+async def fetch_gemini_sentence(ws: WebSocket, signed_words: list):
+    prompt = (
+        "Convert these Indian Sign Language keywords into one short, natural, "
+        "grammatically complete English sentence with proper punctuation and capitalization. "
+        f"Return ONLY the sentence, without quotes or explanations. Keywords: {', '.join(signed_words)}"
+    )
+    fluent_sentence = ""
+    if gemini_client is not None:
+        try:
+            gemini_response = await asyncio.to_thread(
+                gemini_client.models.generate_content,
+                model=GEMINI_MODEL,
+                contents=prompt,
+            )
+            fluent_sentence = (gemini_response.text or "").strip().strip('"')
+        except Exception as error:
+            print(f"[Gemini] Call error: {error}")
+
+    if not fluent_sentence:
+        fluent_sentence = " ".join(signed_words).capitalize()
+        if not fluent_sentence.endswith((".", "!", "?")):
+            fluent_sentence += "."
+
+    try:
+        await ws.send_json({"type": "sentence", "text": fluent_sentence})
+    except Exception:
+        pass
+
 @app.get("/")
 async def read_index() -> FileResponse:
     return FileResponse(STATIC_DIR / "index.html")
 
-@app.get("/index.html")
-async def read_index_explicit() -> FileResponse:
-    return FileResponse(STATIC_DIR / "index.html")
-
-@app.get("/about.html")
-async def read_about() -> FileResponse:
-    return FileResponse(STATIC_DIR / "about.html")
-
-@app.get("/contact.html")
-async def read_contact() -> FileResponse:
-    return FileResponse(STATIC_DIR / "contact.html")
+@app.get("/{filename}.html")
+async def read_html(filename: str) -> FileResponse:
+    return FileResponse(STATIC_DIR / f"{filename}.html")
 
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket) -> None:
@@ -168,7 +168,9 @@ async def websocket_endpoint(websocket: WebSocket) -> None:
     cooldown = 0
     word_buffer = []
     last_detection_time = time.monotonic()
+    
     last_raw_word = ""
+    global_last_word = ""  # The strict lock preventing identical consecutive words
     
     consecutive_predictions = []
     REQUIRED_CONSECUTIVE_FRAMES = 2 
@@ -206,62 +208,42 @@ async def websocket_endpoint(websocket: WebSocket) -> None:
                         if cooldown > 0:
                             cooldown -= 1
                         else:
-                            if confidence >= threshold and current_action != "Neutral":
-                                consecutive_predictions.append(raw_word)
-                                if len(consecutive_predictions) >= REQUIRED_CONSECUTIVE_FRAMES:
-                                    if len(set(consecutive_predictions)) == 1: 
-                                        cooldown = 20
-                                        sequence = []
-                                        if raw_word != last_raw_word:
-                                            word_buffer.append(formatted_word)
-                                            last_detection_time = time.monotonic()
-                                            last_raw_word = raw_word
-                                            response_payload = {"type": "word", "text": formatted_word}
-                                        consecutive_predictions.clear()
-                                    else:
-                                        consecutive_predictions.pop(0) 
+                            if confidence >= threshold:
+                                if current_action == "Neutral":
+                                    last_raw_word = "" 
+                                    consecutive_predictions.clear()
+                                else:
+                                    consecutive_predictions.append(raw_word)
+                                    if len(consecutive_predictions) >= REQUIRED_CONSECUTIVE_FRAMES:
+                                        if len(set(consecutive_predictions)) == 1: 
+                                            cooldown = 10 
+                                            sequence = []
+                                            
+                                            # Strict check: Must not equal last_raw_word OR global_last_word
+                                            if raw_word != last_raw_word and raw_word != global_last_word:
+                                                word_buffer.append(formatted_word)
+                                                last_detection_time = time.monotonic()
+                                                last_raw_word = raw_word
+                                                global_last_word = raw_word  # Lock the word
+                                                response_payload = {"type": "word", "text": formatted_word}
+                                                
+                                            consecutive_predictions.clear()
+                                        else:
+                                            consecutive_predictions.pop(0) 
                             else:
                                 consecutive_predictions.clear()
                 else:
                     sequence = []
                     consecutive_predictions.clear()
+                    last_raw_word = ""
 
             pause_duration = time.monotonic() - last_detection_time
             if word_buffer and pause_duration >= PAUSE_SECONDS:
                 signed_words = word_buffer.copy()
-                prompt = (
-                    "Convert these Indian Sign Language keywords into one short, natural, "
-                    "grammatically complete English sentence with proper punctuation and capitalization. "
-                    f"Return ONLY the sentence, without quotes or explanations. Keywords: {', '.join(signed_words)}"
-                )
-
-                print(f"[Gemini] Pause detected ({pause_duration:.1f}s). Keywords: {signed_words}")
-                fluent_sentence = ""
-                
-                if gemini_client is not None:
-                    try:
-                        gemini_response = await asyncio.to_thread(
-                            gemini_client.models.generate_content,
-                            model=GEMINI_MODEL,
-                            contents=prompt,
-                        )
-                        fluent_sentence = (gemini_response.text or "").strip().strip('"')
-                        print(f"[Gemini] Response: {fluent_sentence!r}")
-                    except Exception as error:
-                        print(f"[Gemini] Call error: {error}")
-
-                if not fluent_sentence:
-                    fluent_sentence = " ".join(signed_words).capitalize()
-                    if not fluent_sentence.endswith((".", "!", "?")):
-                        fluent_sentence += "."
-
-                response_payload = {"type": "sentence", "text": fluent_sentence}
                 word_buffer.clear()
-                last_raw_word = ""
+                asyncio.create_task(fetch_gemini_sentence(websocket, signed_words))
 
             await websocket.send_json(response_payload)
-            if response_payload.get("type") == "sentence":
-                print(f"[WebSocket] Dispatched Sentence: {response_payload['text']!r}")
 
     except WebSocketDisconnect:
         pass

@@ -706,8 +706,8 @@
 
     // Camera & WebSocket Engine Integration
     const videoEl = document.getElementById('webcam');
-    const canvasEl = document.getElementById('captureCanvas');
-    const canvasCtx = canvasEl.getContext('2d');
+    const captureCanvas = document.getElementById('captureCanvas');
+    const canvasCtx = captureCanvas.getContext('2d');
     let ws = null;
     let isTranslating = false;
 
@@ -717,11 +717,11 @@
       const w = videoEl.videoWidth;
       const h = videoEl.videoHeight;
       if (!w || !h) return;
-      if (canvasEl.width !== w || canvasEl.height !== h) {
-        canvasEl.width = w; canvasEl.height = h;
+      if (captureCanvas.width !== w || captureCanvas.height !== h) {
+        captureCanvas.width = w; captureCanvas.height = h;
       }
       canvasCtx.drawImage(videoEl, 0, 0, w, h);
-      ws.send(canvasEl.toDataURL('image/jpeg', 0.7));
+      ws.send(captureCanvas.toDataURL('image/jpeg', 0.7));
     }
 
     function connectWebSocket() {
@@ -751,10 +751,16 @@
             }
           }
 
-          if (data.type === 'word' || data.type === 'sentence') {
+          if (data.type === 'word') {
+            document.getElementById('subtitleBanner').textContent = `Detected: "${data.text}"...`;
+            if ("speechSynthesis" in window) {
+                window.speechSynthesis.cancel();
+                window.speechSynthesis.speak(new SpeechSynthesisUtterance(data.text));
+            }
+          } 
+          else if (data.type === 'sentence') {
             document.getElementById('subtitleBanner').textContent = `"${data.text}"`;
-            appendLog(data.text, data.type);
-            speakLatest();
+            appendLog(data.text, 'sign');
           }
         } catch (err) {}
         sendFrame();
