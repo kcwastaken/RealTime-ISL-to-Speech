@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Practice ISL — SignSpeak</title>
+<meta name="description" content="Watch a sign performed by the avatar, then match it in front of your camera with live confidence feedback." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,460;9..144,560;9..144,650&family=Inter:wght@400;500;600;650;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="assets/styles.css" />
+<meta name="view-transition" content="same-origin" />
+<style>
+  body { font-family: Inter, ui-sans-serif, system-ui, sans-serif; }
+  .practice-head { padding: 44px 0 24px; max-width: 62ch; }
+  .practice-head p { margin-top: 8px; color: var(--ink-soft); }
+  .practice-grid { display: grid; grid-template-columns: 0.9fr 1.1fr; gap: 20px; align-items: start; }
+  @media (max-width: 940px) { .practice-grid { grid-template-columns: 1fr; } }
+  .ref-card { padding: 22px; border-radius: var(--radius-l); }
+  .ref-avatar { position: relative; height: 260px; border-radius: var(--radius-m); overflow: hidden; background: linear-gradient(180deg, var(--banyan-tint), var(--paper)); border: 1px solid var(--line); }
+  .ref-word { margin-top: 18px; font-size: 1.5rem; }
+  .ref-actions { display: flex; gap: 10px; margin-top: 16px; }
+  .ref-actions .btn { flex: 1; }
+  .ref-strip { display: flex; gap: 6px; margin-top: 22px; flex-wrap: wrap; }
+  .ref-dot { width: 10px; height: 10px; border-radius: 999px; background: var(--line-strong); }
+  .ref-dot.is-done { background: var(--banyan); }
+  .ref-dot.is-current { background: var(--marigold); }
+  .cam-card { padding: 0; border-radius: var(--radius-l); overflow: hidden; }
+  .cam-top { display: flex; align-items: center; justify-content: space-between; padding: 16px 18px; background: var(--stage); color: #fff; }
+  .cam-body { position: relative; min-height: 340px; display: flex; align-items: center; justify-content: center; background: var(--stage); }
+  .cam-body video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; background: #000; transform: scaleX(-1); }
+  .cam-empty { text-align: center; color: rgba(255,255,255,0.7); }
+  .cam-empty .glyph { width: 84px; height: 84px; border-radius: 999px; border: 1px dashed rgba(255,255,255,0.3); display: grid; place-items: center; font-size: 2rem; margin: 0 auto 14px; }
+  .match-flag { position: absolute; top: 14px; right: 14px; background: var(--banyan); color: #fff; padding: 6px 12px; border-radius: 999px; font-size: 0.78rem; font-weight: 700; display: none; align-items: center; gap: 6px; }
+  .match-flag.is-visible { display: flex; }
+  .confidence-panel { padding: 18px 20px; background: var(--paper-raised); }
+  .confidence-row { display: flex; align-items: center; justify-content: space-between; font-size: 0.85rem; font-weight: 650; margin-bottom: 8px; }
+  .confidence-row span:last-child { color: var(--banyan-deep); }
+  .complete-card { text-align: center; padding: 60px 30px; border-radius: var(--radius-l); display: none; }
+  .complete-card.is-visible { display: block; }
+  /* A balanced coaching workspace: reference on the left, your live form on the right. */
+  .practice-head { padding: 52px 0 30px; max-width: 760px; }
+  .practice-head h1 { margin-top: 10px; line-height: 1.14; }
+  .practice-grid { grid-template-columns: minmax(360px, .85fr) minmax(0, 1.35fr); gap: 26px; }
+  .ref-card, .cam-card { box-shadow: var(--shadow-sm); }
+  .ref-card { padding: 26px; }
+  .ref-avatar { height: 340px; background: var(--stage); }
+  .ref-actions { margin-top: 18px; }
+  .cam-body { min-height: 450px; }
+  .confidence-panel { padding: 20px 22px; }
+  @media (max-width: 940px) {
+    .practice-head { padding-top: 34px; }
+    .practice-grid { grid-template-columns: 1fr; }
+    .ref-avatar { height: min(56vw, 360px); }
+    .cam-body { min-height: 360px; }
+  }
+  @media (min-width: 1100px) {
+    main.wrap { max-width: min(1680px, calc(100vw - 64px)); }
+    .practice-head { max-width: 860px; }
+    .practice-grid { grid-template-columns: minmax(440px, .9fr) minmax(0, 1.45fr); gap: 30px; }
+    .ref-avatar { height: 390px; }
+    .cam-body { min-height: 520px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap bar">
+    <a href="index.html" class="brand">
+      <span class="brand-mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 6a2 2 0 0 1 2-2h7a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2H9l-3 3v-3H6a2 2 0 0 1-2-2V6Z"/></svg></span>
+      SignSpeak
+    </a>
+    <nav class="main-nav" aria-label="Primary">
+      <a href="index.html">Home</a>
+      <a href="index.html#how-it-works">How it works</a>
+      <a href="practice.html" class="is-active">Practice</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+    <div class="header-actions">
+      <button class="btn btn-icon" onclick="toggleTheme()" title="Toggle Dark Theme" style="background:transparent; font-size:1.2rem;">🌓</button>
+      <a href="translate.html" class="btn btn-primary">Open translator</a>
+      <button class="mobile-nav-toggle" id="navToggle" aria-expanded="false" aria-controls="mobileNav" aria-label="Open menu">☰</button>
+    </div>
+  </div>
+  <nav class="mobile-nav" id="mobileNav" aria-label="Mobile">
+    <a href="index.html">Home</a>
+    <a href="index.html#how-it-works">How it works</a>
+    <a href="practice.html">Practice</a>
+    <a href="about.html">About</a>
+    <a href="contact.html">Contact</a>
+  </nav>
+</header>
+
+<main class="wrap">
+  <div class="practice-head">
+    <p class="eyebrow">Practice</p>
+    <h1 class="font-display" style="font-size:clamp(1.7rem, 3.2vw, 2.3rem);">Get comfortable with a sign before you go live.</h1>
+    <p>Watch how each sign is performed, then try it yourself — SignSpeak scores your form in real time and moves you on once you've got it.</p>
+  </div>
+
+  <div class="practice-grid" id="practiceView">
+    <div class="ref-card card">
+      <p class="eyebrow">Reference — <span id="wordIndex">1 of 9</span></p>
+      <div class="ref-avatar">
+        <video id="refVideo" autoplay loop muted playsinline style="width: 100%; height: 100%; object-fit: cover; background: #000;"></video>
+      </div>
+      <h2 class="font-display ref-word" id="targetWord">Namaste</h2>
+      <div class="ref-actions">
+        <button class="btn btn-ghost" id="replayBtn">↻ Replay sign</button>
+        <button class="btn btn-ghost" id="skipBtn">Skip →</button>
+      </div>
+      <div class="ref-strip" id="refStrip"></div>
+    </div>
+
+    <div class="cam-card card">
+      <div class="cam-top">
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span class="status-dot" id="camDot"></span>
+          <span id="camStatusText" style="font-size:0.9rem;font-weight:600;">Camera offline</span>
+        </div>
+        <div style="display:flex;gap:8px;">
+          <button class="btn btn-primary" id="startBtn" style="padding:10px 18px;">Start camera</button>
+          <button class="btn btn-danger" id="stopBtn" style="display:none;padding:10px 18px;">Stop</button>
+        </div>
+      </div>
+      <div class="cam-body">
+        <div class="cam-empty" id="camEmpty">
+          <div class="glyph">🖐️</div>
+          <p style="font-weight:650;">Ready when you are</p>
+          <p style="font-size:0.85rem;opacity:0.75;margin-top:4px;">Start your camera and try the sign shown on the left.</p>
+        </div>
+        <video id="webcam" autoplay playsinline style="display:none;"></video>
+        <canvas id="captureCanvas" style="display:none;"></canvas>
+        <span class="match-flag" id="matchFlag">✓ Matched</span>
+      </div>
+      <div class="confidence-panel">
+        <div class="confidence-row"><span>Confidence</span><span id="confidenceScore">0%</span></div>
+        <div class="progress-track"><div class="progress-fill" id="confidenceFill"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="complete-card card" id="completeCard">
+    <div style="font-size:2.6rem;">🎉</div>
+    <h2 class="font-display" style="font-size:1.6rem;margin-top:14px;">You've practised every sign.</h2>
+    <p style="margin-top:8px;color:var(--ink-soft);">Ready to try a real conversation, or go again from the top.</p>
+    <div style="display:flex;gap:10px;justify-content:center;margin-top:22px;flex-wrap:wrap;">
+      <button class="btn btn-primary" id="restartBtn">Practice again</button>
+      <a href="translate.html" class="btn btn-ghost">Open live translator</a>
+    </div>
+  </div>
+</main>
+
+<script src="assets/site.js"></script>
+<script src="assets/vocab.js"></script>
+<script>
+  const words = SIGN_VOCAB;
+  let idx = 0;
+  let done = new Set();
+  let holdTicks = 0;
+  let isAdvancing = false; // Prevents background frames from skipping the array
+
+  const targetWordEl = document.getElementById("targetWord");
+  const wordIndexEl = document.getElementById("wordIndex");
+  const refStrip = document.getElementById("refStrip");
+  const practiceView = document.getElementById("practiceView");
+  const completeCard = document.getElementById("completeCard");
+  const refVideo = document.getElementById("refVideo");
+
+  words.forEach(() => {
+    const dot = document.createElement("span");
+    dot.className = "ref-dot";
+    refStrip.appendChild(dot);
+  });
+
+  function renderStrip() {
+    [...refStrip.children].forEach((dot, i) => {
+      dot.classList.toggle("is-done", done.has(i));
+      dot.classList.toggle("is-current", i === idx);
+    });
+  }
+
+  function speak(text) {
+    if (!("speechSynthesis" in window)) return;
+    speechSynthesis.cancel();
+    speechSynthesis.speak(new SpeechSynthesisUtterance(text));
+  }
+
+  function showTarget() {
+    const entry = words[idx];
+    targetWordEl.textContent = entry.word;
+    wordIndexEl.textContent = `${idx + 1} of ${words.length}`;
+    isAdvancing = false; // Unlock for the new sign
+    resetConfidence();
+    renderStrip();
+    refVideo.src = `/videos/${entry.video.toLowerCase()}`;
+  }
+
+  document.getElementById("replayBtn").addEventListener("click", showTarget);
+  document.getElementById("skipBtn").addEventListener("click", advance);
+  document.getElementById("restartBtn").addEventListener("click", () => {
+    done = new Set();
+    idx = 0;
+    completeCard.classList.remove("is-visible");
+    practiceView.style.display = "grid";
+    showTarget();
+  });
+
+  function advance() {
+    done.add(idx);
+    if (done.size >= words.length) {
+      practiceView.style.display = "none";
+      completeCard.classList.add("is-visible");
+      renderStrip();
+      return;
+    }
+    idx = (idx + 1) % words.length;
+    while (done.has(idx)) idx = (idx + 1) % words.length;
+    showTarget();
+  }
+
+  const confidenceScore = document.getElementById("confidenceScore");
+  const confidenceFill = document.getElementById("confidenceFill");
+  const matchFlag = document.getElementById("matchFlag");
+
+  function resetConfidence() {
+    holdTicks = 0;
+    confidenceScore.textContent = "0%";
+    confidenceFill.style.width = "0%";
+    confidenceFill.classList.remove("is-hot");
+    matchFlag.classList.remove("is-visible");
+  }
+
+  function handleTelemetry(data) {
+    if (isAdvancing) return; // Ignore new frames while waiting to transition
+
+    const target = words[idx].word.toLowerCase();
+    const predicted = String(data.predicted_word || "").toLowerCase();
+    if (predicted !== target) { resetConfidence(); return; }
+
+    const conf = Math.round(data.confidence || 0);
+    confidenceScore.textContent = conf + "%";
+    confidenceFill.style.width = conf + "%";
+    confidenceFill.classList.toggle("is-hot", conf >= 80);
+
+    if (conf >= 80) {
+      holdTicks += 1;
+      if (holdTicks >= 3) {
+        isAdvancing = true; // Lock the trigger so it doesn't stack
+        matchFlag.classList.add("is-visible");
+        speak(targetWordEl.textContent);
+        setTimeout(advance, 1200);
+      }
+    } else {
+      holdTicks = 0;
+    }
+  }
+
+  const video = document.getElementById("webcam");
+  const canvas = document.getElementById("captureCanvas");
+  const ctx = canvas.getContext("2d");
+  const startBtn = document.getElementById("startBtn");
+  const stopBtn = document.getElementById("stopBtn");
+  const camEmpty = document.getElementById("camEmpty");
+  const camDot = document.getElementById("camDot");
+  const camStatusText = document.getElementById("camStatusText");
+
+  let ws = null;
+  let active = false;
+  let reconnectTimer = null;
+  let frameTimer = null;
+  let sendingFrame = false;
+
+  function connectSocket() {
+    const proto = location.protocol === "https:" ? "wss" : "ws";
+    ws = new WebSocket(`${proto}://${location.host}/ws`);
+    ws.onopen = () => sendFrame();
+    ws.onmessage = (event) => {
+      if (!active) return;
+      try {
+        const data = JSON.parse(event.data);
+        if (data.type === "telemetry") handleTelemetry(data);
+      } catch (_) { }
+    };
+    ws.onerror = () => { camDot.className = "status-dot is-warn"; };
+    ws.onclose = () => {
+      if (active) {
+        camDot.className = "status-dot is-warn";
+        reconnectTimer = setTimeout(connectSocket, 1200);
+      }
+    };
+  }
+
+  function sendFrame() {
+    if (!active || !ws || ws.readyState !== WebSocket.OPEN || video.readyState < 2) return;
+    const w = video.videoWidth, h = video.videoHeight;
+    if (!w || !h) return;
+    if (canvas.width !== w || canvas.height !== h) { canvas.width = w; canvas.height = h; }
+
+    if (!sendingFrame) {
+      ctx.drawImage(video, 0, 0, w, h);
+      sendingFrame = true;
+      canvas.toBlob(
+        (blob) => {
+          if (blob && ws && ws.readyState === WebSocket.OPEN) {
+            ws.send(blob);
+          }
+          sendingFrame = false;
+        },
+        "image/jpeg",
+        0.7
+      );
+    }
+    frameTimer = setTimeout(sendFrame, 120);
+  }
+
+  startBtn.addEventListener("click", async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: { width: 640, height: 480 }, audio: false });
+      video.srcObject = stream;
+      await new Promise((resolve) => (video.onloadedmetadata = resolve));
+
+      active = true;
+      camEmpty.style.display = "none";
+      video.style.display = "block";
+      camDot.className = "status-dot is-on";
+      camStatusText.textContent = "Camera active";
+      startBtn.style.display = "none";
+      stopBtn.style.display = "inline-flex";
+      connectSocket();
+    } catch (err) {
+      alert("Camera access was denied or unavailable.");
+    }
+  });
+
+  stopBtn.addEventListener("click", stopSession);
+  function stopSession() {
+    active = false;
+    clearTimeout(reconnectTimer);
+    clearTimeout(frameTimer);
+    if (ws) { try { ws.close(); } catch (_) {} ws = null; }
+    if (video.srcObject) video.srcObject.getTracks().forEach((t) => t.stop());
+    video.srcObject = null;
+    video.style.display = "none";
+    camEmpty.style.display = "block";
+    camDot.className = "status-dot";
+    camStatusText.textContent = "Camera offline";
+    startBtn.style.display = "inline-flex";
+    stopBtn.style.display = "none";
+    resetConfidence();
+  }
+  window.addEventListener("beforeunload", stopSession);
+
+  showTarget();
+</script>
+</body>
+</html>

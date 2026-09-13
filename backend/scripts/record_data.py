@@ -12,7 +12,7 @@ sequence_length = 30  # How many frames per sign
 
 # Create folders to save the data
 for action in actions: 
-    for sequence in range(no_sequences):
+    for sequence in range(30, 90):
         try: 
             os.makedirs(os.path.join(DATA_PATH, action, str(sequence)))
         except:
@@ -35,7 +35,7 @@ with mp_holistic.Holistic(min_detection_confidence=0.5, min_tracking_confidence=
         print(f"\n--- Get ready to sign: {action} ---")
         cv2.waitKey(3000)
 
-        for sequence in range(no_sequences):
+        for sequence in range(30, 90):
             for frame_num in range(sequence_length):
                 ret, frame = cap.read()
                 image, results = frame, holistic.process(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))

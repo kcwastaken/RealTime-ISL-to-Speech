@@ -13,7 +13,7 @@ no_sequences = 30
 sequence_length = 30
 
 for action in actions:
-    for sequence in range(no_sequences):
+    for sequence in range(30, 90):
         os.makedirs(DATA_PATH / action / str(sequence), exist_ok=True)
 
 mp_holistic = mp.solutions.holistic
@@ -71,7 +71,7 @@ def extract_keypoints(results) -> np.ndarray:
 cap = cv2.VideoCapture(0)
 with mp_holistic.Holistic(min_detection_confidence=0.5, min_tracking_confidence=0.5) as holistic:
     for action in actions:
-        for sequence in range(no_sequences):
+        for sequence in range(30, 90):
             for frame_num in range(sequence_length):
                 ret, frame = cap.read()
                 if not ret:

@@ -1,63 +1,1088 @@
 <!DOCTYPE html>
-<html lang="en" class="light">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>About - SignSpeak AI</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>tailwind.config = { darkMode: 'class' }</script>
+  <title>About — SignSpeak</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,460;9..144,560;9..144,650&family=Inter:wght@400;500;600;650;700&display=swap"
+    rel="stylesheet"
+  />
+
+  <link rel="stylesheet" href="assets/styles.css" />
+  <meta name="view-transition" content="same-origin" />
+
+  <style>
+    body {
+      font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+    }
+
+    /* =========================
+       IMPACT HERO 
+    ========================== */
+
+    .impact-hero {
+      padding: 52px 0 34px;
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 40px;
+      align-items: center;
+    }
+
+    .impact-heading {
+      max-width: 820px;
+    }
+
+    .impact-heading h1 {
+      font-size: clamp(2.2rem, 4.5vw, 3.25rem);
+      line-height: 1.08;
+      margin-top: 10px;
+    }
+
+    .impact-heading p {
+      margin-top: 18px;
+      max-width: 700px;
+      color: var(--ink-soft);
+      line-height: 1.7;
+      font-size: 1.04rem;
+    }
+
+    .hero-stats-wrapper {
+      grid-column: 1 / -1;
+      margin-top: 10px;
+    }
+
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-top: 20px;
+    }
+
+    .stat-card {
+      padding: 26px;
+      border-radius: var(--radius-m);
+      background: color-mix(in srgb, var(--paper) 88%, transparent);
+      border: 1px solid var(--line);
+    }
+
+    .stat-value {
+      display: block;
+      color: var(--banyan);
+      font-family: "Fraunces", serif;
+      font-size: clamp(2rem, 4vw, 2.8rem);
+      line-height: 1;
+    }
+
+    .stat-label {
+      display: block;
+      margin-top: 12px;
+      font-weight: 700;
+      font-size: 0.92rem;
+    }
+
+    .stat-source {
+      display: block;
+      margin-top: 6px;
+      color: var(--ink-faint);
+      font-size: 0.75rem;
+      line-height: 1.45;
+    }
+
+    .interpreter-callout {
+      margin-top: 18px;
+      padding: 28px 30px;
+      border-radius: var(--radius-l);
+      background: linear-gradient(115deg, #3f31a8, #5b46e6 58%, #3974e8);
+      color: #fff;
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 26px;
+      align-items: center;
+      box-shadow: 0 18px 38px rgba(70, 54, 191, 0.2);
+    }
+
+    .interpreter-callout strong {
+      font-family: "Fraunces", serif;
+      font-size: clamp(2.1rem, 4vw, 3.5rem);
+      line-height: 0.9;
+      white-space: nowrap;
+    }
+
+    .interpreter-callout p {
+      color: rgba(255, 255, 255, 0.86);
+      line-height: 1.65;
+    }
+
+    .data-note {
+      margin-top: 12px;
+      color: var(--ink-faint);
+      font-size: 0.74rem;
+      line-height: 1.5;
+    }
+
+    /* =========================
+       PROBLEM SECTION
+    ========================== */
+
+    .problem-section {
+      margin: 28px 0 18px;
+      padding: 34px;
+      border-radius: var(--radius-l);
+      background: linear-gradient(
+        115deg,
+        rgba(79, 70, 229, 0.12),
+        rgba(23, 185, 173, 0.08)
+      );
+      border: 1px solid var(--line);
+      display: grid;
+      grid-template-columns: 0.85fr 1.15fr;
+      gap: 44px;
+      align-items: center;
+    }
+
+    .problem-section h2 {
+      font-size: 1.85rem;
+      line-height: 1.15;
+    }
+
+    .problem-section p {
+      color: var(--ink-soft);
+      line-height: 1.75;
+    }
+
+    .problem-section p + p {
+      margin-top: 14px;
+    }
+
+    /* =========================
+       WHY SIGNSPEAK
+    ========================== */
+
+    .why-section {
+      padding: 38px 0 24px;
+    }
+
+    .why-copy {
+      max-width: 100%;
+    }
+
+    .why-copy h2 {
+      font-size: clamp(1.8rem, 3vw, 2.35rem);
+      line-height: 1.15;
+      margin-top: 10px;
+    }
+
+    .why-copy p {
+      margin-top: 16px;
+      color: var(--ink-soft);
+      line-height: 1.75;
+    }
+
+    .impact-points {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-top: 24px;
+    }
+
+    .impact-points span {
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: color-mix(in srgb, var(--paper) 78%, transparent);
+      color: var(--ink-soft);
+      font-size: 0.82rem;
+      font-weight: 650;
+      line-height: 1.4;
+    }
+
+    .impact-points b {
+      display: block;
+      color: var(--banyan);
+      font-size: 1.05rem;
+      margin-bottom: 4px;
+    }
+
+    /* =========================
+       PHOTO SHOWCASE
+    ========================== */
+
+    .sign-showcase {
+      position: relative;
+      min-height: 340px;
+      height: 100%;
+      overflow: hidden;
+      border-radius: var(--radius-l);
+      background: #090c1e;
+      border: 1px solid rgba(156, 145, 255, 0.3);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .sign-showcase img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0.82;
+      transition: opacity 0.45s ease;
+    }
+
+    .sign-showcase::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        180deg,
+        rgba(7, 9, 27, 0.04) 30%,
+        rgba(7, 9, 27, 0.84)
+      );
+      pointer-events: none;
+    }
+
+    .showcase-copy {
+      position: absolute;
+      z-index: 1;
+      inset: auto 22px 20px;
+      color: #fff;
+    }
+
+    .showcase-kicker {
+      display: inline-flex;
+      padding: 6px 10px;
+      background: rgba(255, 255, 255, 0.16);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 999px;
+      font-size: 0.68rem;
+      font-weight: 750;
+      letter-spacing: 0.06em;
+    }
+
+    .showcase-copy h2 {
+      font-family: "Fraunces", serif;
+      font-size: 1.55rem;
+      margin-top: 10px;
+    }
+
+    .showcase-copy p {
+      margin-top: 5px;
+      color: rgba(255, 255, 255, 0.78);
+      font-size: 0.85rem;
+      line-height: 1.5;
+    }
+
+    .showcase-controls {
+      position: absolute;
+      z-index: 2;
+      right: 18px;
+      top: 18px;
+      display: flex;
+      gap: 7px;
+    }
+
+    .slide-dot {
+      width: 9px;
+      height: 9px;
+      padding: 0;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.42);
+      border: 1px solid rgba(255, 255, 255, 0.6);
+      cursor: pointer;
+    }
+
+    .slide-dot.is-active {
+      width: 23px;
+      border-radius: 99px;
+      background: #fff;
+    }
+
+    /* =========================
+       ABOUT THE PROJECT
+    ========================== */
+
+    .project-section {
+      padding: 40px 0 20px;
+    }
+
+    .project-section h2 {
+      font-size: 1.9rem;
+      line-height: 1.15;
+      margin-top: 10px;
+    }
+
+    .project-intro {
+      max-width: 780px;
+      color: var(--ink-soft);
+      line-height: 1.75;
+      margin-top: 14px;
+    }
+
+    .project-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+      margin-top: 28px;
+    }
+
+    .project-card {
+      padding: 26px;
+      border-radius: var(--radius-m);
+    }
+
+    .project-card h3 {
+      font-size: 1rem;
+    }
+
+    .project-card p {
+      margin-top: 8px;
+      color: var(--ink-soft);
+      line-height: 1.65;
+      font-size: 0.9rem;
+    }
+
+    /* =========================
+       TECHNOLOGY PIPELINE
+    ========================== */
+
+    .story-grid {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 48px;
+      padding: 42px 0;
+      align-items: start;
+    }
+
+    .story-grid h2 {
+      font-size: 1.6rem;
+    }
+
+    .story-grid p {
+      color: var(--ink-soft);
+      line-height: 1.7;
+      margin-top: 14px;
+    }
+
+    .pipeline-card {
+      padding: 26px;
+      border-radius: var(--radius-m);
+    }
+
+    .pipeline-row {
+      display: flex;
+      gap: 14px;
+      padding: 14px 0;
+    }
+
+    .pipeline-row:not(:last-child) {
+      border-bottom: 1px solid var(--line);
+    }
+
+    .pipeline-num {
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      background: var(--banyan-tint);
+      color: var(--banyan-deep);
+      font-weight: 700;
+      font-size: 0.82rem;
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+    }
+
+    .pipeline-text strong {
+      display: block;
+      font-size: 0.94rem;
+    }
+
+    .pipeline-text span {
+      font-size: 0.85rem;
+      color: var(--ink-soft);
+    }
+
+    /* =========================
+       BELIEF SECTION
+    ========================== */
+
+    .belief-section {
+      margin: 18px 0 36px;
+      display: grid;
+      grid-template-columns: 0.82fr 1.18fr;
+      gap: 42px;
+      align-items: start;
+    }
+
+    .belief-section h2 {
+      font-size: 1.75rem;
+      line-height: 1.15;
+    }
+
+    .belief-section p {
+      color: var(--ink-soft);
+      line-height: 1.75;
+    }
+
+    .belief-section p + p {
+      margin-top: 14px;
+    }
+
+    /* =========================
+       TEAM
+    ========================== */
+
+    .team-section {
+      padding: 12px 0 42px;
+    }
+
+    .team-section h2 {
+      font-size: 1.7rem;
+      margin-top: 10px;
+    }
+
+    .team-intro {
+      max-width: 650px;
+      color: var(--ink-soft);
+      line-height: 1.7;
+      margin-top: 12px;
+    }
+
+    .team-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 18px;
+      margin-top: 26px;
+    }
+
+    .team-card {
+      padding: 26px;
+      border-radius: var(--radius-m);
+    }
+
+    .team-card-top {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .avatar-badge {
+      width: 52px;
+      height: 52px;
+      border-radius: 14px;
+      background: var(--marigold-tint);
+      color: var(--marigold);
+      display: grid;
+      place-items: center;
+      font-weight: 700;
+      font-family: "Fraunces", serif;
+      font-size: 1.3rem;
+      flex-shrink: 0;
+    }
+
+    .team-card h3 {
+      font-size: 1.05rem;
+    }
+
+    .member-role {
+      color: var(--banyan) !important;
+      font-size: 0.72rem !important;
+      font-weight: 750;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-top: 4px !important;
+    }
+
+    .team-card-description {
+      margin-top: 18px;
+      color: var(--ink-soft);
+      font-size: 0.9rem;
+      line-height: 1.65;
+    }
+
+    .profile-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 20px;
+    }
+
+    .profile-link {
+      padding: 7px 11px;
+      border-radius: 9px;
+      background: var(--paper-raised);
+      border: 1px solid var(--line);
+      color: var(--ink-soft);
+      font-size: 0.76rem;
+      font-weight: 650;
+      text-decoration: none;
+      transition: 0.2s ease;
+    }
+
+    .profile-link:hover {
+      border-color: var(--banyan);
+      color: var(--banyan);
+    }
+
+    /* =========================
+       TECH STACK
+    ========================== */
+
+    .stack-section {
+      padding: 4px 0 20px;
+    }
+
+    .stack-strip {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .stack-chip {
+      padding: 9px 15px;
+      border-radius: 10px;
+      background: var(--paper-raised);
+      border: 1px solid var(--line);
+      font-size: 0.86rem;
+      font-weight: 600;
+      color: var(--ink-soft);
+    }
+
+    /* =========================
+       RESPONSIVE
+    ========================== */
+
+    @media (max-width: 860px) {
+      .impact-hero,
+      .problem-section,
+      .story-grid,
+      .belief-section {
+        grid-template-columns: 1fr;
+        gap: 28px;
+      }
+
+      .sign-showcase {
+        min-height: 310px;
+      }
+    }
+
+    @media (max-width: 760px) {
+      .stat-grid,
+      .project-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .interpreter-callout {
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+    }
+
+    @media (max-width: 620px) {
+      .team-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .impact-hero {
+        padding-top: 34px;
+      }
+
+      .impact-points {
+        grid-template-columns: 1fr;
+      }
+
+      .problem-section {
+        padding: 24px;
+      }
+
+      .interpreter-callout {
+        padding: 24px;
+      }
+    }
+  </style>
 </head>
-<body class="bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 min-h-screen font-sans transition-colors duration-300">
-  
-  <nav class="p-6 flex justify-between items-center max-w-5xl mx-auto">
-    <a href="index.html" class="text-xl font-bold bg-gradient-to-r from-blue-600 to-violet-600 dark:from-blue-400 dark:to-violet-400 bg-clip-text text-transparent">SignSpeak AI</a>
-    <div class="flex gap-6 items-center">
-      <a href="index.html" class="text-sm font-bold text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400">Home</a>
-      <a href="contact.html" class="text-sm font-bold text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400">Contact</a>
-    </div>
-  </nav>
 
-  <main class="max-w-4xl mx-auto px-6 py-12">
-    <h1 class="text-5xl font-extrabold mb-8 text-slate-900 dark:text-white">Empowering <span class="text-blue-600 dark:text-blue-400">Accessibility</span> Through AI</h1>
-    
-    <div class="bg-white dark:bg-slate-900 p-8 rounded-3xl border border-slate-100 dark:border-slate-800 shadow-xl shadow-slate-200/50 dark:shadow-none mb-12">
-      <h2 class="text-2xl font-bold mb-4 text-slate-900 dark:text-white">Why We Built This</h2>
-      <p class="text-slate-600 dark:text-slate-400 leading-relaxed mb-4">
-        SignSpeak AI was created to bridge the communication gap between the Deaf and hard-of-hearing community and the rest of the world. Millions of people rely on sign language as their primary mode of communication, yet everyday interactions—from ordering food to attending hackathons—often present significant friction.
-      </p>
-      <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
-        By leveraging cutting-edge web technologies like MediaPipe, LSTM neural networks, and Google Gemini, our goal is to democratize accessibility directly in the browser. No expensive hardware, no heavy installations—just real-time, bidirectional translation that empowers seamless human connection.
-      </p>
+<body>
+
+  <header class="site-header">
+    <div class="wrap bar">
+
+      <a href="index.html" class="brand">
+        <span class="brand-mark">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+            <path d="M4 6a2 2 0 0 1 2-2h7a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2H9l-3 3v-3H6a2 2 0 0 1-2-2V6Z"/>
+            <path d="M20 12v3a2 2 0 0 1-2 2h-1v3l-3-3" opacity=".55"/>
+          </svg>
+        </span>
+        SignSpeak
+      </a>
+
+      <nav class="main-nav" aria-label="Primary">
+        <a href="index.html">Home</a>
+        <a href="index.html#how-it-works">How it works</a>
+        <a href="practice.html">Practice</a>
+        <a href="about.html" class="is-active">About</a>
+        <a href="contact.html">Contact</a>
+      </nav>
+
+      <div class="header-actions">
+        <button
+          class="btn btn-icon"
+          onclick="toggleTheme()"
+          title="Toggle Dark Theme"
+          style="background:transparent; font-size:1.2rem;"
+        >
+          🌓
+        </button>
+
+        <a href="translate.html" class="btn btn-primary">
+          Open translator
+        </a>
+
+        <button
+          class="mobile-nav-toggle"
+          id="navToggle"
+          aria-expanded="false"
+          aria-controls="mobileNav"
+          aria-label="Open menu"
+        >
+          ☰
+        </button>
+      </div>
     </div>
 
-    <h2 class="text-3xl font-extrabold mb-6 text-slate-900 dark:text-white">Meet the Team</h2>
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-      
-      <div class="bg-white dark:bg-slate-900 p-8 rounded-3xl border border-slate-100 dark:border-slate-800 shadow-xl shadow-slate-200/50 dark:shadow-none text-center group">
-        <div class="w-24 h-24 bg-blue-100 dark:bg-blue-900/30 rounded-full mx-auto flex items-center justify-center text-4xl mb-4 group-hover:scale-105 transition-transform">👨‍💻</div>
-        <h3 class="text-xl font-bold text-slate-900 dark:text-white">Krishna Chaudhary</h3>
-        <p class="text-blue-600 dark:text-blue-400 text-sm font-bold mb-3">Backend & ML Engineering</p>
-        <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
-          Information Technology student specializing in Artificial Intelligence and Machine Learning (AIML). Passionate about applying deep learning architectures like LSTMs to solve real-world accessibility challenges.
+    <nav class="mobile-nav" id="mobileNav" aria-label="Mobile">
+      <a href="index.html">Home</a>
+      <a href="index.html#how-it-works">How it works</a>
+      <a href="practice.html">Practice</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+  </header>
+
+
+  <main class="wrap">
+
+    <section class="impact-hero" aria-labelledby="impact-title">
+
+      <div class="impact-heading">
+        <p class="eyebrow">The communication gap</p>
+
+        <h1 id="impact-title" class="font-display">
+          Communication should never become a barrier to being heard.
+        </h1>
+
+        <p>
+          For millions of people in India, communicating across the gap
+          between Indian Sign Language and spoken language can still mean
+          depending on another person to interpret everyday conversations.
         </p>
       </div>
 
-      <div class="bg-white dark:bg-slate-900 p-8 rounded-3xl border border-slate-100 dark:border-slate-800 shadow-xl shadow-slate-200/50 dark:shadow-none text-center group">
-        <div class="w-24 h-24 bg-violet-100 dark:bg-violet-900/30 rounded-full mx-auto flex items-center justify-center text-4xl mb-4 group-hover:scale-105 transition-transform">👩‍🎨</div>
-        <h3 class="text-xl font-bold text-slate-900 dark:text-white">Shivangi Bansal</h3>
-        <p class="text-violet-600 dark:text-violet-400 text-sm font-bold mb-3">Frontend & 3D Interaction</p>
-        <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
-          Information Technology student focusing on interactive digital experiences. Currently pioneering the integration of WebGL and rigged 3D avatars to bring natural, visual sign language responses to the browser.
+      <div class="sign-showcase" aria-label="Indian Sign Language photo slideshow">
+
+        <!-- Initial image load explicitly targets image2.png -->
+        <img
+          id="showcaseImage"
+          src="assets/image2.png"
+          alt="Sign Language Demonstration"
+        />
+
+        <div class="showcase-controls" aria-label="Choose image slide">
+          <button class="slide-dot is-active" data-slide="0" aria-label="Show slide 1"></button>
+          <button class="slide-dot" data-slide="1" aria-label="Show slide 2"></button>
+          <button class="slide-dot" data-slide="2" aria-label="Show slide 3"></button>
+          <button class="slide-dot" data-slide="3" aria-label="Show slide 4"></button>
+        </div>
+
+        <div class="showcase-copy">
+          <span class="showcase-kicker">ISL IN ACTION</span>
+          <h2 id="showcaseTitle">Expression</h2>
+          <p id="showcaseText">Empowering every voice to be seen and understood.</p>
+        </div>
+
+      </div>
+
+      <div class="hero-stats-wrapper">
+
+        <div class="stat-grid">
+          <article class="stat-card">
+            <strong class="stat-value">5.07M</strong>
+            <span class="stat-label">Hearing-impaired people</span>
+            <span class="stat-source">Census 2011 official records · 1.64M people recorded as speech-impaired</span>
+          </article>
+
+          <article class="stat-card">
+            <strong class="stat-value">18M</strong>
+            <span class="stat-label">Estimated Deaf community</span>
+            <span class="stat-source">National Association of the Deaf estimate</span>
+          </article>
+
+          <article class="stat-card">
+            <strong class="stat-value">63M</strong>
+            <span class="stat-label">People with significant hearing loss</span>
+            <span class="stat-source">WHO estimate for India</span>
+          </article>
+        </div>
+
+        <div class="interpreter-callout">
+          <strong>1 : 60,000</strong>
+          <p>
+            Only an estimated <b>250–325 certified ISL interpreters</b>
+            serve the country — roughly one interpreter for every 60,000
+            Deaf people. While authorised institutes offer training in
+            sign-language interpretation, the shortage remains significant.
+          </p>
+        </div>
+
+        <p class="data-note">
+          Sources stated above: Census 2011, National Association of the Deaf
+          (NAD), WHO, and DISLI training information. Figures are included as
+          supplied for this project context.
+        </p>
+
+      </div>
+
+    </section>
+
+    <section class="problem-section">
+
+      <div>
+        <p class="eyebrow">Why this matters</p>
+        <h2 class="font-display" style="margin-top:10px;">
+          The problem is not a lack of communication. It is a lack of access.
+        </h2>
+      </div>
+
+      <div>
+        <p>
+          At a hospital, classroom, workplace, service counter or even a
+          family gathering, a simple conversation can become difficult when
+          the people involved do not share the same language.
+        </p>
+        <p>
+          Deaf people should not have to wait for an interpreter to ask a
+          question, explain a need or participate in an everyday moment.
+          Communication should be available when the moment happens.
         </p>
       </div>
 
-    </div>
+    </section>
+
+    <section class="why-section">
+
+      <div class="why-copy">
+        <p class="eyebrow">Why we built SignSpeak</p>
+        <h2 class="font-display">
+          We wanted technology to make the conversation easier — in both directions.
+        </h2>
+        <p>
+          SignSpeak started with a simple idea: if technology can understand
+          spoken language, recognise gestures and generate natural language,
+          it should also be able to help people communicate through sign.
+        </p>
+        <p>
+          Instead of building only a sign-to-speech translator, we wanted
+          to create a two-way bridge — one that can recognise ISL and speak
+          the response, while also helping a hearing person learn and
+          communicate back through sign.
+        </p>
+
+        <div class="impact-points">
+          <span><b>Independence</b> Communicate without always relying on an interpreter.</span>
+          <span><b>Inclusion</b> Keep both sides of the conversation involved.</span>
+          <span><b>Learning</b> Make it easier for anyone to practise signing.</span>
+        </div>
+      </div>
+
+    </section>
+
+    <section class="project-section">
+
+      <p class="eyebrow">About SignSpeak</p>
+      <h2 class="font-display">
+        A two-way bridge between Indian Sign Language and spoken conversation.
+      </h2>
+      <p class="project-intro">
+        SignSpeak is a browser-based Indian Sign Language translator designed
+        to support communication in both directions. A webcam can capture
+        signs and convert recognised gestures into spoken language, while
+        spoken input can be converted into corresponding sign animations
+        through a 3D avatar.
+      </p>
+
+      <div class="project-grid">
+        <article class="project-card card">
+          <h3>ISL → Speech</h3>
+          <p>
+            The system captures hand, face and body movements through the
+            webcam, recognises trained ISL gestures and converts the recognised
+            words into a natural spoken sentence.
+          </p>
+        </article>
+
+        <article class="project-card card">
+          <h3>Speech → ISL</h3>
+          <p>
+            Spoken language is transcribed in the browser and matched with
+            supported signed phrases, which are then performed by a rigged
+            3D avatar.
+          </p>
+        </article>
+      </div>
+
+    </section>
+
+    <section class="story-grid">
+
+      <div>
+        <p class="eyebrow">Behind the technology</p>
+        <h2 class="font-display" style="margin-top:10px;">
+          What happens behind the camera
+        </h2>
+        <p>
+          Every frame from the webcam is processed using MediaPipe Holistic
+          to extract hand, face and pose keypoints. These keypoints are
+          passed to an LSTM model trained to recognise ISL gestures.
+        </p>
+        <p>
+          Once the signs are recognised, the resulting keywords are combined
+          into a more natural sentence using Gemini before the sentence is
+          spoken aloud through the browser.
+        </p>
+        <p>
+          In the reverse direction, speech is transcribed using the Web Speech
+          API and matched against a library of supported signed phrases.
+          A Three.js-based 3D avatar then performs the corresponding sign.
+        </p>
+      </div>
+
+      <div class="pipeline-card card">
+        <div class="pipeline-row">
+          <div class="pipeline-num">1</div>
+          <div class="pipeline-text">
+            <strong>Capture</strong>
+            <span>Webcam frames are streamed through a live connection.</span>
+          </div>
+        </div>
+        <div class="pipeline-row">
+          <div class="pipeline-num">2</div>
+          <div class="pipeline-text">
+            <strong>Keypoints</strong>
+            <span>MediaPipe Holistic tracks hands, face and pose.</span>
+          </div>
+        </div>
+        <div class="pipeline-row">
+          <div class="pipeline-num">3</div>
+          <div class="pipeline-text">
+            <strong>Recognition</strong>
+            <span>An LSTM classifier identifies trained ISL signs.</span>
+          </div>
+        </div>
+        <div class="pipeline-row">
+          <div class="pipeline-num">4</div>
+          <div class="pipeline-text">
+            <strong>Sentence shaping</strong>
+            <span>Gemini converts recognised keywords into a fluent sentence.</span>
+          </div>
+        </div>
+        <div class="pipeline-row">
+          <div class="pipeline-num">5</div>
+          <div class="pipeline-text">
+            <strong>Voice / Sign output</strong>
+            <span>The response is spoken aloud or performed by the 3D avatar.</span>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <section class="belief-section">
+
+      <div>
+        <p class="eyebrow">What we believe</p>
+        <h2 id="belief-title" class="font-display" style="margin-top:10px;">
+          Understanding should not depend on which side of the conversation you are on.
+        </h2>
+      </div>
+
+      <div>
+        <p>
+          Sign language is often treated as something only Deaf people need
+          to learn. We believe communication works better when both sides
+          make an effort to understand each other.
+        </p>
+        <p>
+          Every person deserves the opportunity to express themselves,
+          participate and be understood. That is why SignSpeak is not only
+          about translation. Practice Mode is designed to give hearing users
+          a way to learn supported signs and communicate back.
+        </p>
+      </div>
+
+    </section>
+
+    <section class="team-section">
+
+      <p class="eyebrow">The developers</p>
+      <h2 class="font-display">Two builders, one goal.</h2>
+      <p class="team-intro">
+        SignSpeak is a collaborative project combining frontend engineering,
+        machine learning and real-time communication into one accessible
+        experience.
+      </p>
+
+      <div class="team-grid">
+        <article class="team-card card">
+          <div class="team-card-top">
+            <div class="avatar-badge">S</div>
+            <div>
+              <h3>Shivangi</h3>
+              <p class="member-role">Frontend & Product Engineering</p>
+            </div>
+          </div>
+          <p class="team-card-description">
+            Final-year Information Technology student at MITS Gwalior,
+            responsible for the frontend experience, interface design,
+            translator integration and the interactive 3D avatar experience.
+          </p>
+          <div class="profile-links">
+            <a href="https://github.com/Shivangi-015" target="_blank" rel="noopener noreferrer" class="profile-link">GitHub</a>
+            <a href="https://linkedin.com/in/shivangi-bansal-s01" target="_blank" rel="noopener noreferrer" class="profile-link">LinkedIn</a>
+          </div>
+        </article>
+
+        <article class="team-card card">
+          <div class="team-card-top">
+            <div class="avatar-badge">K</div>
+            <div>
+              <h3>Krishna Chaudhary</h3>
+              <p class="member-role">Machine Learning & Recognition</p>
+            </div>
+          </div>
+          <p class="team-card-description">
+            Information Technology & AIML student, responsible for model
+            training, gesture recognition and the machine-learning pipeline
+            behind SignSpeak's ISL recognition system.
+          </p>
+          <div class="profile-links">
+            <a href="https://github.com/kcwastaken" target="_blank" rel="noopener noreferrer" class="profile-link">GitHub</a>
+            <a href="https://www.linkedin.com/in/krishna-chaudhary-52a479286" target="_blank" rel="noopener noreferrer" class="profile-link">LinkedIn</a>
+          </div>
+        </article>
+      </div>
+
+    </section>
+
+    <section class="stack-section">
+      <p class="eyebrow">Built with</p>
+      <div class="stack-strip">
+        <span class="stack-chip">TensorFlow / Keras</span>
+        <span class="stack-chip">OpenCV</span>
+        <span class="stack-chip">MediaPipe Holistic</span>
+        <span class="stack-chip">FastAPI + WebSockets</span>
+        <span class="stack-chip">Gemini 2.5</span>
+        <span class="stack-chip">Three.js</span>
+        <span class="stack-chip">Web Speech API</span>
+      </div>
+    </section>
+
   </main>
 
+  <footer class="site-footer">
+    <div class="wrap grid">
+      <div>
+        <div class="brand">
+          <span class="brand-mark">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+              <path d="M4 6a2 2 0 0 1 2-2h7a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2H9l-3 3v-3H6a2 2 0 0 1-2-2V6Z"/>
+            </svg>
+          </span>
+          SignSpeak
+        </div>
+        <p class="foot-text" style="margin-top:14px;max-width:320px;">
+          A browser-based bridge between Indian Sign Language and spoken conversation.
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="assets/site.js"></script>
+
+  <!-- =========================
+       NEW PHOTO SLIDESHOW
+  ========================== -->
+
   <script>
-    if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-      document.documentElement.classList.add('dark');
+    // Updated to match your exact .png file names
+    const slides = [
+      {
+        image: "assets/image2.png",
+        title: "Expression",
+        text: "Empowering every voice to be seen and understood."
+      },
+      {
+        image: "assets/image1.png",
+        title: "Community",
+        text: "Building bonds that go beyond spoken words."
+      },
+      {
+        image: "assets/image.png",
+        title: "Education",
+        text: "Ensuring no student is left behind in the classroom."
+      },
+      {
+        image: "assets/image3.png",
+        title: "Connection",
+        text: "Sharing everyday moments of joy and friendship."
+      }
+    ];
+
+    const showcaseImage = document.getElementById("showcaseImage");
+    const showcaseTitle = document.getElementById("showcaseTitle");
+    const showcaseText = document.getElementById("showcaseText");
+    const slideButtons = [...document.querySelectorAll(".slide-dot")];
+
+    let currentSlide = 0;
+
+    function showSlide(index) {
+      currentSlide = index;
+      const slide = slides[index];
+
+      // Fade out
+      showcaseImage.style.opacity = "0";
+
+      // Wait for fade to finish, then swap content and fade back in
+      setTimeout(() => {
+        showcaseImage.src = slide.image;
+        showcaseTitle.textContent = slide.title;
+        showcaseText.textContent = slide.text;
+        showcaseImage.style.opacity = ".82";
+      }, 400); 
+
+      slideButtons.forEach((button, buttonIndex) => {
+        button.classList.toggle("is-active", buttonIndex === index);
+      });
     }
+
+    slideButtons.forEach((button, index) => {
+      button.addEventListener("click", () => showSlide(index));
+    });
+
+    // Auto loop every 5.2 seconds
+    let slider = setInterval(() => showSlide((currentSlide + 1) % slides.length), 5200);
+
+    // Pause on hover
+    document.querySelector(".sign-showcase").addEventListener("mouseenter", () => clearInterval(slider));
+    document.querySelector(".sign-showcase").addEventListener("mouseleave", () => {
+      slider = setInterval(() => showSlide((currentSlide + 1) % slides.length), 5200);
+    });
+
   </script>
+
 </body>
 </html>

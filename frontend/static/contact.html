@@ -1,58 +1,167 @@
 <!DOCTYPE html>
-<html lang="en" class="light">
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Contact - SignSpeak AI</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>tailwind.config = { darkMode: 'class' }</script>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Contact — SignSpeak</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,460;9..144,560;9..144,650&family=Inter:wght@400;500;600;650;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="assets/styles.css" />
+<meta name="view-transition" content="same-origin" />
+<style>
+  body { font-family: Inter, ui-sans-serif, system-ui, sans-serif; }
+  .contact-grid { display: grid; grid-template-columns: 0.9fr 1.1fr; gap: 48px; padding: 60px 0 90px; align-items: start; }
+  @media (max-width: 860px) { .contact-grid { grid-template-columns: 1fr; } }
+  .contact-hero h1 { font-size: clamp(2rem, 4vw, 2.7rem); line-height: 1.14; }
+  .contact-hero p { margin-top: 16px; color: var(--ink-soft); line-height: 1.65; max-width: 42ch; }
+  .contact-info { margin-top: 32px; display: flex; flex-direction: column; gap: 16px; }
+  .contact-info a { display: flex; align-items: center; gap: 12px; font-size: 0.95rem; font-weight: 600; }
+  .contact-info .ico { width: 38px; height: 38px; border-radius: 10px; background: var(--banyan-tint); color: var(--banyan-deep); display: grid; place-items: center; }
+
+  .form-card { padding: 32px; border-radius: var(--radius-l); }
+  .field { margin-bottom: 18px; }
+  .field label { display: block; font-size: 0.86rem; font-weight: 650; margin-bottom: 7px; }
+  .field input, .field textarea, .field select {
+    width: 100%; padding: 12px 14px; border-radius: 10px; border: 1px solid var(--line-strong);
+    background: var(--paper); font-family: inherit; font-size: 0.95rem; color: var(--ink);
+  }
+  .field input:focus, .field textarea:focus, .field select:focus { outline: none; border-color: var(--banyan); background: var(--paper-raised); }
+  .field textarea { resize: vertical; min-height: 120px; }
+  .field .err { color: #b3452f; font-size: 0.8rem; margin-top: 6px; display: none; }
+  .field.has-error input, .field.has-error textarea { border-color: #b3452f; }
+  .field.has-error .err { display: block; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 520px) { .two-col { grid-template-columns: 1fr; } }
+  .success-note { display: none; margin-top: 16px; padding: 14px 16px; border-radius: 12px; background: var(--banyan-tint); color: var(--banyan-deep); font-size: 0.9rem; font-weight: 600; }
+  .success-note.is-visible { display: block; }
+</style>
 </head>
-<body class="bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 min-h-screen font-sans transition-colors duration-300">
-  
-  <nav class="p-6 flex justify-between items-center max-w-5xl mx-auto">
-    <a href="index.html" class="text-xl font-bold bg-gradient-to-r from-blue-600 to-violet-600 dark:from-blue-400 dark:to-violet-400 bg-clip-text text-transparent">SignSpeak AI</a>
-    <div class="flex gap-6 items-center">
-      <a href="index.html" class="text-sm font-bold text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400">Home</a>
-      <a href="about.html" class="text-sm font-bold text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400">About</a>
+<body>
+
+<header class="site-header">
+  <div class="wrap bar">
+    <a href="index.html" class="brand">
+      <span class="brand-mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 6a2 2 0 0 1 2-2h7a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2H9l-3 3v-3H6a2 2 0 0 1-2-2V6Z"/><path d="M20 12v3a2 2 0 0 1-2 2h-1v3l-3-3" opacity=".55"/></svg></span>
+      SignSpeak
+    </a>
+    <nav class="main-nav" aria-label="Primary">
+      <a href="index.html">Home</a>
+      <a href="index.html#how-it-works">How it works</a>
+      <a href="practice.html">Practice</a>
+      <a href="about.html">About</a>
+      <a href="contact.html" class="is-active">Contact</a>
+    </nav>
+    <div class="header-actions">
+      <button class="btn btn-icon" onclick="toggleTheme()" title="Toggle Dark Theme" style="background:transparent; font-size:1.2rem;">🌓</button>
+      <a href="translate.html" class="btn btn-primary">Open translator</a>
+      <button class="mobile-nav-toggle" id="navToggle" aria-expanded="false" aria-controls="mobileNav" aria-label="Open menu">☰</button>
     </div>
+  </div>
+  <nav class="mobile-nav" id="mobileNav" aria-label="Mobile">
+    <a href="index.html">Home</a>
+    <a href="index.html#how-it-works">How it works</a>
+    <a href="practice.html">Practice</a>
+    <a href="about.html">About</a>
+    <a href="contact.html">Contact</a>
   </nav>
+</header>
 
-  <main class="max-w-2xl mx-auto px-6 py-12 text-center">
-    <div class="w-20 h-20 bg-blue-100 dark:bg-blue-900/30 rounded-2xl mx-auto flex items-center justify-center text-3xl mb-6 shadow-sm">✉️</div>
-    <h1 class="text-4xl font-extrabold mb-4 text-slate-900 dark:text-white">Get in Touch</h1>
-    <p class="text-lg text-slate-600 dark:text-slate-400 mb-12">
-      Interested in collaborating, asking about our open-source datasets, or bringing SignSpeak AI to your organization? We'd love to hear from you.
-    </p>
-    
-    <div class="bg-white dark:bg-slate-900 p-8 rounded-3xl border border-slate-100 dark:border-slate-800 shadow-xl shadow-slate-200/50 dark:shadow-none text-left">
-      <form action="mailto:hello@signspeak.ai" method="GET" enctype="text/plain" class="space-y-6">
-        
-        <div>
-          <label class="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Your Name</label>
-          <input type="text" placeholder="John Doe" class="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900 dark:text-white" required>
-        </div>
-
-        <div>
-          <label class="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Email Address</label>
-          <input type="email" placeholder="john@example.com" class="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900 dark:text-white" required>
-        </div>
-
-        <div>
-          <label class="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Message</label>
-          <textarea rows="4" placeholder="How can we help you?" class="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900 dark:text-white resize-none" required></textarea>
-        </div>
-
-        <button type="submit" class="w-full py-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-lg transition-colors">
-          Send Message
-        </button>
-      </form>
+<main class="wrap">
+  <div class="contact-grid">
+    <div class="contact-hero">
+      <p class="eyebrow">Get in touch</p>
+      <h1 class="font-display" style="margin-top:10px;">Questions, feedback, or want to collaborate?</h1>
+      <p>Tell us what you're trying to do with SignSpeak — whether that's a bug report, a new sign you'd like added to the library, or a partnership idea.</p>
+      <div class="contact-info">
+        <a href="mailto:shivangibansal015@gmail.com"><span class="ico">✉️</span> shivangibansal015@gmail.com</a>
+        <a href="https://github.com/kcwastaken/RealTime-ISL-to-Speech" target="_blank" rel="noopener"><span class="ico">💻</span> View the project on GitHub</a>
+      </div>
     </div>
-  </main>
 
-  <script>
-    if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-      document.documentElement.classList.add('dark');
+    <form class="form-card card" id="contactForm" novalidate>
+      <div class="two-col">
+        <div class="field" id="nameField">
+          <label for="cName">Name</label>
+          <input id="cName" name="name" type="text" placeholder="Your name" autocomplete="name" />
+          <p class="err">Please share your name.</p>
+        </div>
+        <div class="field" id="emailField">
+          <label for="cEmail">Email</label>
+          <input id="cEmail" name="email" type="email" placeholder="you@example.com" autocomplete="email" />
+          <p class="err">Enter a valid email address.</p>
+        </div>
+      </div>
+      <div class="field" id="topicField">
+        <label for="cTopic">What's this about</label>
+        <select id="cTopic" name="topic">
+          <option value="feedback">General feedback</option>
+          <option value="bug">Something's broken</option>
+          <option value="sign">Suggest a new sign</option>
+          <option value="collab">Collaboration</option>
+        </select>
+      </div>
+      <div class="field" id="messageField">
+        <label for="cMessage">Message</label>
+        <textarea id="cMessage" name="message" placeholder="Write your message here"></textarea>
+        <p class="err">Add a short message so we know how to help.</p>
+      </div>
+      <button type="submit" class="btn btn-primary" style="width:100%;" id="contactSubmit">Send message</button>
+      <p class="success-note" id="successNote">Thanks — your message is ready. Your email app should have opened with everything filled in; just hit send there.</p>
+    </form>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap grid">
+    <div>
+      <div class="brand">
+        <span class="brand-mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 6a2 2 0 0 1 2-2h7a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2H9l-3 3v-3H6a2 2 0 0 1-2-2V6Z"/></svg></span>
+        SignSpeak
+      </div>
+      <p class="foot-text" style="margin-top:14px;max-width:320px;">A browser-based bridge between Indian Sign Language and spoken conversation.</p>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/site.js"></script>
+<script>
+  const form = document.getElementById("contactForm");
+  const successNote = document.getElementById("successNote");
+
+  function setError(fieldId, hasError) {
+    document.getElementById(fieldId).classList.toggle("has-error", hasError);
+  }
+
+  form.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const name = form.name.value.trim();
+    const email = form.email.value.trim();
+    const message = form.message.value.trim();
+    const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+    setError("nameField", !name);
+    setError("emailField", !emailOk);
+    setError("messageField", message.length < 3);
+
+    if (!name || !emailOk || message.length < 3) {
+      successNote.classList.remove("is-visible");
+      return;
     }
-  </script>
+
+    const topicLabel = form.topic.options[form.topic.selectedIndex].text;
+    const subject = encodeURIComponent(`SignSpeak — ${topicLabel} from ${name}`);
+    const body = encodeURIComponent(`${message}\n\n— ${name} (${email})`);
+    window.location.href = `mailto:hello@signspeak.app?subject=${subject}&body=${body}`;
+    successNote.classList.add("is-visible");
+  });
+
+  [form.name, form.email, form.message].forEach((el) => {
+    el.addEventListener("input", () => {
+      if (el === form.name) setError("nameField", false);
+      if (el === form.email) setError("emailField", false);
+      if (el === form.message) setError("messageField", false);
+    });
+  });
+</script>
 </body>
 </html>

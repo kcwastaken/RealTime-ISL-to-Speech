@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Live translator — SignSpeak</title>
+<meta name="description" content="Sign into your camera and hear it spoken aloud, or speak and watch the avatar sign back." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,460;9..144,560;9..144,650&family=Inter:wght@400;500;600;650;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="assets/styles.css" />
+<meta name="view-transition" content="same-origin" />
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+  }
+}
+</script>
+<style>
+  body { font-family: Inter, ui-sans-serif, system-ui, sans-serif; }
+  .studio-head { padding: 26px 0 18px; display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
+  .studio-head h1 { font-size: clamp(1.55rem, 2.4vw, 2.15rem); }
+  .studio-head p { margin-top: 8px; color: var(--ink-soft); max-width: 52ch; }
+  .session-badge { display: flex; align-items: center; gap: 8px; font-size: 0.82rem; font-weight: 650; color: var(--ink-soft); }
+  .studio-grid { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(390px, .85fr); gap: 24px; padding-bottom: 28px; align-items: stretch; }
+  @media (max-width: 980px) { .studio-grid { grid-template-columns: 1fr; } }
+  .stage-controls { display: flex; align-items: center; gap: 8px; }
+  .stage-empty { text-align: center; color: rgba(255,255,255,0.7); }
+  .stage-empty .glyph { width: 74px; height: 74px; border-radius: 999px; border: 1px dashed rgba(255,255,255,0.3); display: grid; place-items: center; font-size: 1.8rem; margin: 0 auto 12px; }
+  .subtitle-bar { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 18px 20px; background: var(--paper-raised); border: 1px solid var(--line); border-top: none; border-radius: 0 0 var(--radius-l) var(--radius-l); }
+  .subtitle-bar .label { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.02em; color: var(--banyan-deep); }
+  .subtitle-bar .text { font-size: 1.1rem; font-weight: 650; margin-top: 2px; }
+  .side-card { padding: 18px; border-radius: var(--radius-l); display: flex; flex-direction: column; gap: 12px; position: static; }
+  .side-card .head { display: flex; align-items: center; justify-content: space-between; }
+  .side-card .head h2 { font-size: 1.05rem; font-family: inherit; font-weight: 700; }
+  .side-card .head span { font-size: 0.78rem; color: var(--ink-faint); }
+  #chatLog { min-height: 138px; max-height: 180px; }
+  .channel-label { display:flex; align-items:center; gap:8px; font-size:.72rem; font-weight:750; letter-spacing:.08em; color:var(--ink-soft); }
+  .channel-label .channel-dot { width:9px; height:9px; border-radius:50%; background:var(--marigold); box-shadow:0 0 0 4px var(--marigold-tint); }
+  .avatar-pane { border-radius: 18px; min-height: 150px; position: relative; overflow: hidden; background: var(--stage); }
+  .stage { box-shadow: var(--shadow-lg); }
+  .stage-body { height: clamp(360px, 42vw, 560px); min-height: 0; aspect-ratio: auto; }
+  #webcam { position: absolute; inset: 0; width: 100% !important; height: 100% !important; object-fit: contain; background: #000; }
+  .stage-empty .glyph { background: rgba(255,255,255,.06); }
+  @media (min-width: 1100px) {
+    body { overflow-x: hidden; overflow-y: auto; }
+    .site-header .bar, main.wrap { max-width: 1600px; }
+    main.wrap { min-height: auto; display: block; }
+    .studio-head > div:first-child { display:grid; grid-template-columns:auto 1fr; column-gap:16px; align-items:center; }
+    .studio-head .eyebrow { grid-column:1; grid-row:1; }
+    .studio-head h1 { grid-column:2; grid-row:1; white-space:nowrap; }
+    .studio-head p:not(.eyebrow) { grid-column:2; grid-row:2; margin-top:2px; max-width:none; font-size:.88rem; }
+    .studio-grid { min-height: auto; }
+    .stage-body { height: clamp(390px, 44vh, 560px); min-height: 0; aspect-ratio:auto; }
+    #chatLog { min-height:138px; max-height:180px; }
+    .avatar-pane { min-height:220px; }
+  }
+  @media (max-width: 1099px) { body { overflow-x:hidden; overflow-y:auto; } }
+  @media (max-width: 980px) { .stage-body { height:auto; min-height:340px; aspect-ratio:4 / 3; } }
+  @media (max-width: 560px) { .studio-head { padding-top:32px; } .studio-grid { padding-bottom:48px; } .stage-head { align-items:flex-start; gap:12px; flex-direction:column; } .stage-controls:last-child { width:100%; justify-content:flex-end; } .subtitle-bar .text { font-size:1rem; } }
+</style>
+</head>
+<body>
+
+<a class="skip-link" href="#translator">Skip to translator</a>
+
+<header class="site-header">
+  <div class="wrap bar">
+    <a href="index.html" class="brand">
+      <span class="brand-mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 6a2 2 0 0 1 2-2h7a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2H9l-3 3v-3H6a2 2 0 0 1-2-2V6Z"/><path d="M20 12v3a2 2 0 0 1-2 2h-1v3l-3-3" opacity=".55"/></svg></span>
+      SignSpeak
+    </a>
+    <nav class="main-nav" aria-label="Primary">
+      <a href="index.html">Home</a>
+      <a href="index.html#how-it-works">How it works</a>
+      <a href="practice.html">Practice</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+    <div class="header-actions">
+      <button class="btn btn-icon" onclick="toggleTheme()" title="Toggle Dark Theme" style="background:transparent; font-size:1.2rem;">🌓</button>
+      <a href="translate.html" class="btn btn-primary">Open translator</a>
+      <button class="mobile-nav-toggle" id="navToggle" aria-expanded="false" aria-controls="mobileNav" aria-label="Open menu">☰</button>
+    </div>
+  </div>
+  <nav class="mobile-nav" id="mobileNav" aria-label="Mobile">
+    <a href="index.html">Home</a>
+    <a href="index.html#how-it-works">How it works</a>
+    <a href="practice.html">Practice</a>
+    <a href="about.html">About</a>
+    <a href="contact.html">Contact</a>
+  </nav>
+</header>
+
+<main class="wrap" id="translator">
+  <div class="studio-head">
+    <div>
+      <p class="eyebrow">Live session</p>
+      <h1 class="font-display">Have a two-way conversation.</h1>
+      <p>Two people, two natural ways to communicate. Sign to have your words spoken aloud, or speak to receive an ISL reply.</p>
+    </div>
+    <div class="session-badge"><span class="status-dot" id="badgeDot"></span> <span id="badgeText">Standby</span></div>
+  </div>
+
+  <div class="studio-grid">
+    <div>
+      <div class="stage">
+        <div class="stage-head">
+          <div class="stage-controls">
+            <span class="status-dot" id="camDot"></span>
+            <span id="camStatusText" style="font-size:0.9rem;font-weight:600;">Camera offline</span>
+          </div>
+          <div class="stage-controls">
+            <button class="btn btn-primary" id="startBtn">Start camera</button>
+            <button class="btn btn-danger" id="stopBtn" style="display:none;">End session</button>
+          </div>
+        </div>
+        <div class="stage-body">
+          <div class="stage-empty" id="stageEmpty">
+            <div class="glyph">🖐️</div>
+            <p style="font-weight:650;">Your camera space</p>
+            <p style="font-size:0.85rem;opacity:0.75;margin-top:4px;">Start the camera and sign naturally.</p>
+          </div>
+          <video id="webcam" autoplay playsinline style="display:none;"></video>
+          <canvas id="captureCanvas" style="display:none;"></canvas>
+        </div>
+      </div>
+      <div class="subtitle-bar">
+        <div>
+          <div class="label">SIGNER SAID · SPOKEN ALOUD</div>
+          <div class="text" id="subtitleText">Waiting for signs…</div>
+        </div>
+        <button class="btn btn-icon" id="speakBtn" title="Read latest translation aloud" aria-label="Speak latest translation">🔊</button>
+      </div>
+    </div>
+
+    <div class="side-card card">
+      <div class="channel-label"><span class="channel-dot"></span> VOICE-TO-SIGN CHANNEL</div>
+      
+      <!-- Video Element replaced the 3D Avatar Canvas here -->
+      <div class="avatar-pane">
+        <span class="avatar-label" style="position: absolute; z-index: 10; top: 12px; left: 12px; background: rgba(0,0,0,0.5); padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 700; color: #fff;">SIGNED REPLY</span>
+        <video id="replyVideo" muted playsinline style="width: 100%; height: 100%; object-fit: cover; display: none;"></video>
+        <div class="avatar-fallback" id="avatarFallback" style="position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px;">
+          <span style="font-size:1.8rem;">🧍</span>
+          <span style="font-size: 0.85rem; color: var(--ink-faint); margin-top: 8px;">The video will play here once you speak.</span>
+        </div>
+      </div>
+
+      <div class="head">
+        <h2>Shared conversation</h2>
+        <span id="msgCount">0 messages</span>
+      </div>
+      <div class="chat-log scroller" id="chatLog">
+        <div class="empty-log" id="emptyLog">
+          <span class="glyph">💬</span>
+          <p style="font-size:0.88rem;">Your conversation will appear here.</p>
+        </div>
+      </div>
+
+      <button class="mic-btn" id="micBtn">🎙 Speak to show a sign</button>
+    </div>
+  </div>
+</main>
+
+<div class="modal-overlay" id="dictModal">
+  <div class="modal-card">
+    <div class="modal-head">
+      <div>
+        <p class="eyebrow">Sign library</p>
+        <h2 class="font-display" style="font-size:1.4rem;margin-top:6px;">Supported signs</h2>
+      </div>
+      <button class="modal-close" id="dictClose" aria-label="Close dictionary">×</button>
+    </div>
+    <p style="margin-top:12px;color:var(--ink-soft);font-size:0.88rem;">Tap a sign to see it performed by the video reference clip.</p>
+    <div class="dict-grid" id="dictGrid"></div>
+  </div>
+</div>
+
+<script src="assets/site.js"></script>
+<script src="assets/vocab.js"></script>
+<script>
+  // Setup the video element to hide the fallback UI when playing
+  const avatarFallback = document.getElementById("avatarFallback");
+  const replyVideo = document.getElementById("replyVideo");
+  
+  replyVideo.addEventListener("play", () => {
+    avatarFallback.style.display = "none";
+    replyVideo.style.display = "block";
+  });
+
+  const chatLog = document.getElementById("chatLog");
+  const emptyLog = document.getElementById("emptyLog");
+  const msgCount = document.getElementById("msgCount");
+  let total = 0;
+  let latestSpoken = "";
+
+  function appendMessage(text, from) {
+    emptyLog.style.display = "none";
+    const row = document.createElement("div");
+    row.className = `msg from-${from}`;
+    const time = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+    row.innerHTML = `
+      <span class="msg-meta">${from === "signer" ? "Signer" : "You · Voice"} · ${time}</span>
+      <div class="msg-bubble"></div>`;
+    row.querySelector(".msg-bubble").textContent = text;
+    chatLog.appendChild(row);
+    chatLog.scrollTop = chatLog.scrollHeight;
+    total += 1;
+    msgCount.textContent = `${total} message${total === 1 ? "" : "s"}`;
+    if (from === "signer") latestSpoken = text;
+  }
+
+  function speak(text) {
+    if (!text || !("speechSynthesis" in window)) return;
+    speechSynthesis.cancel();
+    speechSynthesis.speak(new SpeechSynthesisUtterance(text));
+  }
+  document.getElementById("speakBtn").addEventListener("click", () => speak(latestSpoken));
+
+  // Updated to play local .mp4 videos instead of using the Avatar system
+  async function replyInSign(phrase) {
+    const entry = findVocabEntry(phrase);
+    if (!entry) {
+      showToast(`No sign on file yet for "${phrase}"`);
+      return;
+    }
+    
+    // Grabs the filename from vocab.js (e.g., Namaste.mp4)
+    replyVideo.src = `/videos/${entry.video.toLowerCase()}`;
+    replyVideo.play().catch(() => console.log("Video autoplay blocked or missing."));
+    
+    appendMessage(entry.word, "signer");
+  }
+
+  document.getElementById("micBtn").addEventListener("click", startListening);
+
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  const micBtn = document.getElementById("micBtn");
+  let recognition = null;
+  if (SpeechRecognition) {
+    recognition = new SpeechRecognition();
+    recognition.lang = "en-US";
+    recognition.continuous = false;
+    recognition.onstart = () => {
+      micBtn.classList.add("is-listening");
+      micBtn.textContent = "● Listening…";
+    };
+    recognition.onresult = (e) => {
+      const transcript = e.results[0][0].transcript;
+      appendMessage(transcript, "voice");
+      replyInSign(transcript);
+    };
+    recognition.onerror = (e) => {
+      if (e.error !== "no-speech") showToast("Couldn't hear that — try again.");
+    };
+    recognition.onend = () => {
+      micBtn.classList.remove("is-listening");
+      micBtn.textContent = "🎙 Speak to show a sign";
+    };
+  } else {
+    micBtn.disabled = true;
+    micBtn.textContent = "Microphone not supported in this browser";
+  }
+  function startListening() {
+    if (!recognition) return;
+    try { recognition.start(); } catch (_) { }
+  }
+
+  const video = document.getElementById("webcam");
+  const canvas = document.getElementById("captureCanvas");
+  const ctx = canvas.getContext("2d");
+  const startBtn = document.getElementById("startBtn");
+  const stopBtn = document.getElementById("stopBtn");
+  const stageEmpty = document.getElementById("stageEmpty");
+  const camDot = document.getElementById("camDot");
+  const camStatusText = document.getElementById("camStatusText");
+  const badgeDot = document.getElementById("badgeDot");
+  const badgeText = document.getElementById("badgeText");
+  const subtitleText = document.getElementById("subtitleText");
+
+  let ws = null;
+  let active = false;
+  let reconnectTimer = null;
+  let frameTimer = null;
+  let sendingFrame = false;
+
+  function setSessionUI(state) {
+    camDot.className = "status-dot" + (state === "on" ? " is-on" : state === "warn" ? " is-warn" : "");
+    badgeDot.className = "status-dot" + (state === "on" ? " is-on" : state === "warn" ? " is-warn" : "");
+    badgeText.textContent = state === "on" ? "Live" : state === "warn" ? "Reconnecting" : "Standby";
+  }
+
+  function connectSocket() {
+    const proto = location.protocol === "https:" ? "wss" : "ws";
+    ws = new WebSocket(`${proto}://${location.host}/ws`);
+    ws.onopen = () => { setSessionUI("on"); sendFrame(); };
+    ws.onmessage = (event) => {
+      if (!active) return;
+      try {
+        const data = JSON.parse(event.data);
+        if (data.type === "word") {
+          subtitleText.textContent = data.text + "…";
+        } else if (data.type === "sentence") {
+          subtitleText.textContent = data.text;
+          appendMessage(data.text, "signer");
+          speak(data.text);
+        }
+      } catch (_) { }
+    };
+    ws.onerror = () => setSessionUI("warn");
+    ws.onclose = () => {
+      if (active) {
+        setSessionUI("warn");
+        reconnectTimer = setTimeout(connectSocket, 1200);
+      }
+    };
+  }
+
+  function sendFrame() {
+    if (!active || !ws || ws.readyState !== WebSocket.OPEN || video.readyState < 2) return;
+    const w = video.videoWidth, h = video.videoHeight;
+    if (!w || !h) return;
+    if (canvas.width !== w || canvas.height !== h) { canvas.width = w; canvas.height = h; }
+
+    if (!sendingFrame) {
+      ctx.drawImage(video, 0, 0, w, h);
+      sendingFrame = true;
+      canvas.toBlob(
+        (blob) => {
+          if (blob && ws && ws.readyState === WebSocket.OPEN) {
+            ws.send(blob);
+          }
+          sendingFrame = false;
+        },
+        "image/jpeg",
+        0.7
+      );
+    }
+    frameTimer = setTimeout(sendFrame, 120);
+  }
+
+  startBtn.addEventListener("click", async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: { width: 640, height: 480 }, audio: false });
+      video.srcObject = stream;
+      await new Promise((resolve) => (video.onloadedmetadata = resolve));
+
+      active = true;
+      stageEmpty.style.display = "none";
+      video.style.display = "block";
+      video.style.width = "100%";
+      video.style.height = "100%";
+      video.style.objectFit = "contain";
+      video.style.background = "#000";
+      video.style.transform = "scaleX(-1)";
+      camStatusText.textContent = "Camera active";
+      subtitleText.textContent = "Watching for signs…";
+      startBtn.style.display = "none";
+      stopBtn.style.display = "inline-flex";
+      connectSocket();
+    } catch (err) {
+      showToast("Camera access was denied or unavailable.");
+    }
+  });
+
+  stopBtn.addEventListener("click", stopSession);
+  function stopSession() {
+    active = false;
+    clearTimeout(reconnectTimer);
+    clearTimeout(frameTimer);
+    if (ws) { try { ws.close(); } catch (_) {} ws = null; }
+    if (video.srcObject) video.srcObject.getTracks().forEach((t) => t.stop());
+    video.srcObject = null;
+    video.style.display = "none";
+    stageEmpty.style.display = "block";
+    camStatusText.textContent = "Camera offline";
+    subtitleText.textContent = "Waiting for signs…";
+    startBtn.style.display = "inline-flex";
+    stopBtn.style.display = "none";
+    setSessionUI("off");
+  }
+  window.addEventListener("beforeunload", stopSession);
+
+  // Updated Dictionary to trigger the video player instead of the Avatar
+  const dictModal = document.getElementById("dictModal");
+  const dictGrid = document.getElementById("dictGrid");
+  SIGN_VOCAB.forEach((entry) => {
+    const item = document.createElement("button");
+    item.className = "dict-item";
+    item.innerHTML = `<span class="glyph">${entry.emoji}</span><span>${entry.word}</span>`;
+    item.addEventListener("click", () => {
+      dictModal.classList.remove("is-open");
+      replyVideo.src = `/videos/${entry.video.toLowerCase()}`;
+      replyVideo.play().catch(() => {});
+    });
+    dictGrid.appendChild(item);
+  });
+  document.getElementById("dictBtn").addEventListener("click", () => dictModal.classList.add("is-open"));
+  document.getElementById("dictClose").addEventListener("click", () => dictModal.classList.remove("is-open"));
+  dictModal.addEventListener("click", (e) => { if (e.target === dictModal) dictModal.classList.remove("is-open"); });
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape") dictModal.classList.remove("is-open"); });
+</script>
+</body>
+</html>
